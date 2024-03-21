@@ -97,6 +97,7 @@ result_df <- data.frame(
   Gene = character(),
   F_statistic = numeric(),
   p_value = numeric(),
+  variance = numeric(),
   stringsAsFactors = FALSE
 )
 
@@ -128,13 +129,38 @@ for (i in 1:ncol(X_scaled))
     # Extract F-statistic and p-value
     f_statistic <- anova_result[[1]]$`F value`[1]
     p_value <- anova_result[[1]]$`Pr(>F)`[1]
+    variance <- var(X[,i-1])
 
     # Extract gene name
     gene_name <- paste("gene", i-1, sep = "_")
     
     # Add results to data frame
-    result_df <- rbind(result_df, data.frame(Gene = gene_name, F_statistic = f_statistic, p_value = p_value))
+    result_df <- rbind(result_df, data.frame(Gene = gene_name, F_statistic = f_statistic, p_value = p_value,variance = variance))
   }
 }
 print(result_df, row.names = FALSE)
-write.csv(result_df,file="One way ANOVA.csv",row.names = FALSE)
+
+# Extract the p-values from the result_df data frame
+p_values <- result_df$p_value
+
+# Apply multiple testing correction
+corrected_pvals <- p.adjust(p_values, method = "fdr")
+
+# Update result_df$p_value with corrected p-values
+result_df$p_value <- corrected_pvals
+
+# Determine rejected hypotheses based on corrected p-values
+rejected <- corrected_pvals < 0.05
+
+# Add 'rejected' column to result_df
+result_df$rejected <- rejected
+
+# Select genes based on variance and save to .csv file
+variances_sorted <- result_df %>% arrange(desc(variance))
+write.csv(variances_sorted,file="One way ANOVA.csv",row.names = FALSE)
+
+# Extract the top 3 and the bottom 3 genes from the high_variance_genes list
+selected_genes <- c(head(variances_sorted, 3)$Gene, tail(variances_sorted, 3)$Gene)
+
+# Print selected genes
+cat("Selected genes for analysis:", selected_genes, "\n")
