@@ -2,11 +2,7 @@
 
 library(sf)
 library(ggplot2)
-#library(tmap)
-#library(tmaptools)
-#library(leaflet)
 library(dplyr)
-#library(maps)
 
 mydata <- st_read("C://Users//Swapnonil//Downloads//IND_Map//India_State_Boundary.shp", stringsAsFactors = FALSE)
 #str(mydata)
