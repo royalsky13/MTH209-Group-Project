@@ -18,7 +18,6 @@ load("ICMR.Rdata")
 ls()
 View(df)
 
-
 ################################
 ## Perform the one way ANOVA test
 ################################
