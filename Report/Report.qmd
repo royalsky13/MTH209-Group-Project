@@ -48,7 +48,7 @@ Cancer remains a significant global health challenge, characterized by immense s
 
 In this project, we deal with multiple datasets that are based on cancer patients and the nature of cancer in both male and female human bodies.
 
-[**1. Cancer Gene Dataset:**](https://www.kaggle.com/datasets/shibumohapatra/icmr-data?select=data.csv) The input dataset contains $802$ samples corresponding to $802$ people who have been detected with different types of cancer. Each sample contains expression values of more than $20$K genes. Samples are categorized into one of the following types of tumors: BRCA, KIRC, COAD, LUAD, and PRAD.
+[**1. Cancer causing Genes Dataset:**](https://www.kaggle.com/datasets/shibumohapatra/icmr-data?select=data.csv) The input dataset contains $802$ samples corresponding to $802$ people who have been detected with different types of cancer. Each sample contains expression values of more than $20$K genes. Samples are categorized into one of the following types of tumors: BRCA, KIRC, COAD, LUAD, and PRAD.
 
 Here's an extended description of the tumors associated with the dataset:
 
@@ -62,13 +62,13 @@ Here's an extended description of the tumors associated with the dataset:
 
 -   [PRAD (Prostate Cancer)]{.underline}: Prostate cancer occurs in the prostate, a small gland in men that produces seminal fluid. It is one of the most common cancers in men. The dataset could include samples from individuals with prostate cancer, focusing on identifying the genes associated with this type of cancer.
 
-[**2. Cancer Label Dataset:**](https://www.kaggle.com/datasets/shibumohapatra/icmr-data?select=labels.csv) Samples contain different types of tumors: BRCA, KIRC, COAD, LUAD, and PRAD.
+[**2. Cancer causing Labels Dataset:**](https://www.kaggle.com/datasets/shibumohapatra/icmr-data?select=labels.csv) Samples contain different types of tumors: BRCA, KIRC, COAD, LUAD, and PRAD.
 
-[**3. Estimated State-wise Cancer Incidence:**](https://sansad.in/getFile/loksabhaquestions/annex/1712/AU1399.pdf?source=pqals) The table provides estimated incidence of cancer cases in India by States and Union Territory-wise for all sites and for both sexes.
+[**3. Estimated State-wise Cancer Incidences:**](https://sansad.in/getFile/loksabhaquestions/annex/1712/AU1399.pdf?source=pqals) The table provides estimated incidence of cancer cases in India by States and Union Territory-wise for all sites and for both sexes.
 
 [**4. Gender-wise Different Sites of Cancer:**](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231735/table/ijmr_1821_22-t001/?report=objectonly) The table presents the estimated cancer incidence, number of cases, crude rate, and cumulative risk by sex and anatomical sites in India for the year $2022$.
 
-[**5. Age-wise Cancer Incidence:**](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231735/table/ijmr_1821_22-t002/?report=objectonly) The table provides gender-disaggregated, estimated top five leading sites of cancer ($\%$) in India by age group ($0-14, 15-39, 40-64, 65$+ age groups) for the year $2022$.
+[**5. Age-wise Cancer Incidences:**](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231735/table/ijmr_1821_22-t002/?report=objectonly) The table provides gender-disaggregated, estimated top five leading sites of cancer ($\%$) in India by age group ($0-14, 15-39, 40-64, 65$+ age groups) for the year $2022$.
 
 ### Data Pre-processing and Cleaning
 
