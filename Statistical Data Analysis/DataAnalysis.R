@@ -18,66 +18,6 @@ load("ICMR.Rdata")
 ls()
 View(df)
 
-################################
-## Visualise the Distribution of cancer types
-################################
-
-my_colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd")
-ggplot(data = df, aes(x = Class, fill = Class)) +
-  geom_bar(color = "black", fill = my_colors) +  # Add black border around bars
-  geom_text(stat = 'count', aes(label = after_stat(count)), vjust = -0.5, size = 3, color = "black") +  # Adjust text size, color, and position
-  labs(title = "Distribution of Cancer Types", x = "Class", y = "Count") +  # Add meaningful titles to axes
-  theme_minimal()  # Apply a minimal theme 
-
-################################
-## Calculate the average expression for each gene across all samples
-################################
-
-gene_names_df <- as.tibble(colnames(df)[-c(1,2)])
-colnames(gene_names_df) <- "Gene"
-gene_names_df$Gene <- as.factor(gene_names_df$Gene)
-average_gene_expression <- gene_names_df %>% mutate(Expression=apply(df[-c(1,2)], 2, mean))
-
-################################
-## Plot the distribution of average expression levels
-################################
-
-ggplot(average_gene_expression, aes(x = Expression)) +
-  geom_histogram(binwidth = 0.3, fill = "#4B0082", color = "black", aes(y = ..density..), alpha = 0.7) +
-  geom_density(fill = "#FF5733", alpha = 0.4) +
-  labs(x = "Average Gene Expression", y = "Density", title = "Distribution of Average Gene Expression Levels") +
-  theme_minimal()
-
-################################
-## Extract gene expression data and class labels
-################################
-
-gene_expression_data <- data.matrix(df[, -c(1,2)])
-class_labels <- df$Class
-
-################################
-## Perform hierarchical clustering
-################################
-
-hc <- hclust(dist(gene_expression_data), method = "ward.D2")
-
-# Define color mapping for class labels
-color_mapping <- c("class1" = "red", 
-                   "class2" = "blue", 
-                   "class3" = "green",
-                   "class4" = "orange",
-                   "class5" = "black")
-
-# Map the cancer types to the colors
-row_colors <- color_mapping[as.character(class_labels)]
-
-# Create the clustered heatmap
-heatmap.2(gene_expression_data, Rowv = as.dendrogram(hc), Colv = as.dendrogram(hc),
-          col = colorRampPalette(c("black", "white", "red"))(100),  # Adjust the color scale as needed
-          scale = "none", key = TRUE, keysize = 1, key.title = NA, symkey = FALSE,
-          density.info = "none", trace = "none", cexRow = 0.5, cexCol = 0.8,
-          margins = c(8, 8), colRow = row_colors,
-          main = "Clustered Heatmap of Gene Expression Data")
 
 ################################
 ## Perform the one way ANOVA test
@@ -164,3 +104,58 @@ selected_genes <- c(head(variances_sorted, 3)$Gene, tail(variances_sorted, 3)$Ge
 
 # Print selected genes
 cat("Selected genes for analysis:", selected_genes, "\n")
+
+# Define function for "one vs. all" t-tests
+unique_cancer_types <- unique(df$Class)
+p_values <- c()
+
+for (i in 3:ncol(df)) {
+  gene <- colnames(df)[i]
+  
+  for (cancer_type in unique_cancer_types) {
+    # Subset data for the specific cancer type
+    group1 <- df[df$Class == cancer_type, i]
+    # Subset data for all other cancer types combined
+    group2 <- df[df$Class != cancer_type, i]
+    
+    # Check if both groups have enough observations
+    if (length(group1) > 1 && length(group2) > 1) {
+      # Perform the t-test
+      t_test_result <- t.test(group1, group2, var.equal = FALSE)
+      # Store the p-value
+      p_values <- c(p_values, t_test_result$p.value)
+      cat(paste(cancer_type, "vs All for", gene, ": p-value =", t_test_result$p.value, "\n"))
+    } else {
+      cat("Not enough observations for", cancer_type, "vs All for", gene, "\n")
+    }
+  }
+}
+
+# Apply FDR correction to the p-values
+corrected_p_values <- p.adjust(p_values, method = 'fdr')
+
+# Output corrected p-values
+cat("Corrected p-values:", corrected_p_values, "\n")
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
