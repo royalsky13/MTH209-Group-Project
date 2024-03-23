@@ -19,6 +19,11 @@ ls()
 View(df)
 
 ################################
+## Extract gene expression data and class labels
+################################
+gene_expression_data <- data.matrix(df[, -c(1,2)])
+
+################################
 ## Perform the one way ANOVA test
 ################################
 
