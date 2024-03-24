@@ -62,4 +62,4 @@ library(ggplot2)
 ggplot(Can_lab_tab, aes(x = Var1, y = Freq)) +
   geom_bar(stat = "identity", fill = "cornflowerblue") +
   labs(title = "Different Types of Cancer Sites",
-       y = "", x = "Frequency")
+       y = "Frequency", x = "Types")
