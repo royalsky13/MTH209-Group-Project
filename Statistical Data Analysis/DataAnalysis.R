@@ -18,10 +18,6 @@ load("ICMR.Rdata")
 ls()
 View(df)
 
-################################
-## Extract gene expression data and class labels
-################################
-gene_expression_data <- data.matrix(df[, -c(1,2)])
 
 ################################
 ## Perform the one way ANOVA test
@@ -141,8 +137,44 @@ corrected_p_values <- p.adjust(p_values, method = 'fdr')
 # Output corrected p-values
 cat("Corrected p-values:", corrected_p_values, "\n")
   
+##############################################################################
 
+################################
+## Load the data
+################################
+rm(list = ls())
+ls()
+load("Cancer_Sites.Rdata")
+ls()
 
+# Summary Statistics
+summary_stats <- dat %>%
+  group_by(Gender) %>%
+  summarise(
+    mean_cases = mean(Cases, na.rm = TRUE),
+    mean_CR = mean(CR, na.rm = TRUE),
+    mean_AAR = mean(AAR, na.rm = TRUE),
+    mean_cumrisk = mean(`Cum-risk`, na.rm = TRUE)
+  )
+
+# Boxplot of Cases by Gender
+gender_colors <- c("Male" = "blue", "Female" = "red", "Both" = "green")
+ggplot(dat, aes(x = factor(Gender), y = Cases, fill = factor(Gender))) +
+  geom_boxplot() +
+  scale_fill_manual(values = gender_colors) +  # Apply custom colors
+  labs(title = "Boxplot of Cases by Gender", x = "Gender", y = "Cases") +
+  theme_minimal() +  # Minimalistic theme
+  theme(plot.title = element_text(hjust = 0.5))  # Centered title
+
+# Mean CR by Gender
+mean_CR_comparison <- dat %>% group_by(Gender) %>% summarise(mean_CR = mean(CR, na.rm = TRUE))
+
+# Identifying High-Risk Sites
+threshold <- 0.01  # We set this!
+# Filter organs with Cum-risk greater than the threshold
+high_risk_organs_female <- dat %>% filter(Gender == 1 & `Cum-risk` > threshold)
+high_risk_organs_male <- dat %>% filter(Gender == 0 & `Cum-risk` > threshold)
+high_risk_organs_both <- dat %>% filter(Gender == 2 & `Cum-risk` > threshold)
 
 
 
