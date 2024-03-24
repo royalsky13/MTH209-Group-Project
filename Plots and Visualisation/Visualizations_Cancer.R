@@ -1,22 +1,3 @@
-# Basic Vidualisations of the age specific cancer incidence.
-
-table(rq)
-hist(rq, freq = FALSE)
-lines(density(rq, bw = 5))
-
-
-hb <- table(cut(rq, breaks = seq(0,80,5), right = TRUE))
-plot(dgamma(rgamma(100,1,2),1,2), type = "l")
-df <- as.data.frame(hb)
-hist(df)
-
-hist(as.vector(rep(df$Var1, df$Freq)))
-
-print(hb)
-length(DELHI)
-length(seq(0,79,5))
-(4.5/2)
-
 #==============================================================================#
 ########### Age Specific Cancer Incidence Visualizations With  Gender ##########
 #==============================================================================#
@@ -66,4 +47,19 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
   geom_bar(stat = "identity", fill = "deepskyblue3") +
   labs(title = "Top Ten Cancer Sites of Female",
+       y = "", x = "Frequency")
+
+#==============================================================================#
+################ Different type of Cancer Sites Visualization ##################
+#==============================================================================#
+
+Can_lab <- read.csv("C:/Users/Swapnonil/Downloads/labels.csv")
+# table(Can_lab$Class)
+Can_lab_tab <- data.frame(table(Can_lab$Class))
+
+library(ggplot2)
+
+ggplot(Can_lab_tab, aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  labs(title = "Different Types of Cancer Sites",
        y = "", x = "Frequency")
