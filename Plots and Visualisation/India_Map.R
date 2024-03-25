@@ -34,15 +34,16 @@ map_and_data <- merge(mydata_map, dat.a, by.x = "State_Name", by.y = "State",
 map_and_data$X2020 <- as.numeric(map_and_data$X2020)
 map_and_data$X2021 <- as.numeric(map_and_data$X2021)
 map_and_data$X2022 <- as.numeric(map_and_data$X2022)
-names(map_and_data$X2020) = "Incidence_of_2020"
-names(map_and_data$X2021) = "Incidence_of_2021"
-names(map_and_data$X2022) = "Incidence_of_2022"
+colnames(map_and_data) <- c("State_Name", "Incidence_of_2020", "Incidence_of_2021", "Incidence_of_2022", "geometry")
+# names(map_and_data$X2020) = "Incidence_of_2020"
+# names(map_and_data$X2021) = "Incidence_of_2021"
+# names(map_and_data$X2022) = "Incidence_of_2022"
 
 #View(map_and_data)
 
 # Choropleth Map for the year 2020
 ggplot(map_and_data) +
-  geom_sf(aes(geometry = geometry, fill = X2020),
+  geom_sf(aes(geometry = geometry, fill = Incidence_of_2020),
           linewidth = 0,
           color = "gray50") +
   theme(panel.background = element_blank(),
@@ -52,7 +53,7 @@ ggplot(map_and_data) +
 
 # Choropleth Map for the year 2021
 ggplot(map_and_data) +
-  geom_sf(aes(geometry = geometry, fill = X2021),
+  geom_sf(aes(geometry = geometry, fill = Incidence_of_2021),
           linewidth = 0,
           color = "gray50") +
   theme(panel.background = element_blank(),
@@ -62,7 +63,7 @@ ggplot(map_and_data) +
 
 # Choropleth Map for the year 2022
 ggplot(map_and_data) +
-  geom_sf(aes(geometry = geometry, fill = X2022),
+  geom_sf(aes(geometry = geometry, fill = Incidence_of_2022),
           linewidth = 0,
           color = "gray50") +
   theme(panel.background = element_blank(),
