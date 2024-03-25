@@ -2,7 +2,7 @@
 
 library(sf)
 library(ggplot2)
-library(dplyr)
+# library(dplyr)
 
 mydata <- st_read("C://Users//Swapnonil//Downloads//IND_Map//India_State_Boundary.shp", stringsAsFactors = FALSE)
 #str(mydata)
