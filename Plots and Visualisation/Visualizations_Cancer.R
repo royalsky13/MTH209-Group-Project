@@ -59,7 +59,20 @@ Can_lab_tab <- data.frame(table(Can_lab$Class))
 
 library(ggplot2)
 
-ggplot(Can_lab_tab, aes(x = Var1, y = Freq)) +
+Can_lab_tab$Prop <- round(Can_lab_tab$Freq/sum(Can_lab_tab$Freq) * 100, 2)
+Can_lab_tab$Prop <- paste(as.character(Can_lab_tab$Prop), "%", sep = "")
+colnames(Can_lab_tab) <- c("Types", "Freq", "Prop")
+
+ggplot(Can_lab_tab, aes(x = Types, y = Freq)) +
   geom_bar(stat = "identity", fill = "cornflowerblue") +
   labs(title = "Different Types of Cancer Sites",
        y = "Frequency", x = "Types")
+
+ggplot(Can_lab_tab, aes(x = "", y = Freq, fill = Types)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  labs(title = "Different Types of Cancer Sites") +
+  theme_void() +
+  geom_text(aes(label = Prop), color = "white",
+            position = position_stack(vjust = c(0.5))) +
+  scale_fill_brewer(palette="Set1")
