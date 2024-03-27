@@ -1,0 +1,55 @@
+Site,Male,Female
+Oral cavity and pharynx,145844,52594
+Tongue,41845,14611
+Mouth,60164,23675
+Pharynx,3177,1168
+Other oral cavity,40658,13140
+Digestive system,172025,116029
+Oesophagus,34272,21300
+Stomach,34353,18353
+Small intestine,2255,1533
+Colon,21595,16512
+Rectum,22985,15767
+"Anus, anal canal",3037,2131
+Liver and intrahepatic bile duct,28020,11306
+Gallbladder and other biliary,12997,20570
+Pancreas,12511,8557
+Respiratory system,108848,34214
+Larynx,28542,3498
+Lung and bronchus,75474,27897
+Other respiratory organs,4832,2819
+Bones and joints,8426,6087
+Soft tissue,8380,6895
+Skin (excluding basal and squamous),11745,9412
+Melanoma of the skin,3145,2479
+Other non-epithelial skin,8600,6933
+Breast,5649,216108
+Genital system,54625,163694
+Uterine cervix,0,79103
+Uterine corpus,0,27922
+Ovary,0,46126
+Vulva,0,2258
+"Vagina and other genital, female",0,7961
+Placenta,0,324
+Prostate,43691,0
+Testis,4521,0
+"Penis and other genital, male",6413,0
+Urinary system,34942,11861
+Urinary bladder,21523,5713
+Kidney and renal pelvis,12963,5930
+Ureter and other urinary organs,456,218
+Eye and orbit,1326,977
+Brain and other nervous system,20811,13296
+Endocrine system,9682,27847
+Thyroid,8967,27253
+Adrenal gland,715,594
+Lymphoma,34116,21233
+Hodgkin lymphoma,7561,4113
+Non-Hodgkin lymphoma,26497,17070
+Malig Imn.Prol D,58,50
+Multiple myeloma,11261,8165
+Leukaemia,33604,21969
+Lymphoid leukaemia,14546,7638
+Myeloid leukaemia,15531,11788
+Leukaemia unspecified,3527,2543
+Other and unspecified primary sites,50892,38870
