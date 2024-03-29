@@ -77,7 +77,7 @@ cum_density_m <- cumsum(density_m)
 
 ecdf_m <- cum_density_m/sum(density_m) 
 plot(sorted_vals_m, ecdf_m, type = "s", 
-     main = "Empirical CDF", xlab = "Age of male cancer patients", ylab = "CDF")
+     main = "Empirical CDF", xlab = "Age of male cancer patients", ylab = "Cumulative Probability")
 
 
 ###### Plotting the normal cdf 
@@ -98,18 +98,19 @@ lines(sorted_vals_m, gamma_cdf_m, col = "green")
 legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
        lty = 1, col = c("black", "red", "green"))
 
-ks.test(f, "pgamma", shape_m, scale_m)
+ks.test(f, "pgamma", shape_m, scale_m) #testing whether gamma dist or not
 
 ############# two empirical cdf's head ot head
 plot <- plot(sorted_vals_m, ecdf_m, type = "s", 
-             main = "Empirical CDF's", xlab = "Age of male & female cancer patients", ylab = "CDF")
+             main = "Empirical CDF's", xlab = "Age of male & female cancer patients", 
+             ylab = "Cumulative Probability")
 lines(sorted_vals_f, ecdf_f, type = "s", col = "pink")
 legend("topleft", legend = c("Empirical CDF females", "Empirical CDF females"), 
        lty = 1, col = c("black", "pink"))
 
 ########Do x and y come from same distribution?
 
-ks.test(f, m) 
+ks.test(f, m) #testing whether Two dists are similar or not
 #they have ideantical distribution
 
 
