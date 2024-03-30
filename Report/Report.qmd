@@ -2,17 +2,17 @@
 title: "Genetic Correspondence and Comparative Spatial Analysis with Age and Gender Specification of ICMR Data on Cancer Incidence in India"
 author:
   - name: Sarbojit Das (231080075)
-    affil-id: 1
+    affil-id: "*"
   - name: Swapnonil Mondal (231080098)
-    affil-id: 1
+    affil-id: "*"
   - name: Sujash Krishna Basak (231080093)
-    affil-id: 1 
+    affil-id: "*"
   - name: Sameer Verma (220949)
-    affil-id: 1
+    affil-id: "*"
   - name: Sayanta Biswas (231080080)
-    affil-id: 1
+    affil-id: "*"
 affiliations:
-  - id: 1
+  - id: "*"
     name: Department of Mathematics & Statistics, Indian Institute of Technology Kanpur, India
 date: today
 date-format: long
@@ -164,12 +164,19 @@ The data we have, has $20,534$ columns with $800$ rows, as mentioned in the desc
 #|   - "Frequency of Classes"
 #|   - "Histogram of Variance Range"
 #| layout-ncol: 2
-my_colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd")
-ggplot(data = df, aes(x = Class, fill = Class)) +
-  geom_bar(color = "black", fill = my_colors) +  # Add black border around bars
-  geom_text(stat = 'count', aes(label = after_stat(count)), vjust = -0.5, size = 3, color = "black") +  # Adjust text size, color, and position
-  labs(title = "Distribution of Cancer Types", x = "Class", y = "Count") +  # Add meaningful titles to axes
-  theme_minimal()  # Apply a minimal theme 
+Can_lab <- df[c(1,2)]
+Can_lab_tab <- data.frame(table(Can_lab$Class))
+Can_lab_tab$Prop <- round(Can_lab_tab$Freq/sum(Can_lab_tab$Freq) * 100, 2)
+Can_lab_tab$Prop <- paste(as.character(Can_lab_tab$Prop), "%", sep = "")
+colnames(Can_lab_tab) <- c("Types", "Freq", "Prop")
+ggplot(Can_lab_tab, aes(x = "", y = Freq, fill = Types)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  labs(title = "Distribution of Cancer Types") +
+  theme_void() +
+  geom_text(aes(label = Prop), color = "white",
+            position = position_stack(vjust = c(0.5))) +
+  scale_fill_brewer(palette="Set1")
 vars <- apply (df[-c(1,2)],2,var)
 # Calculate the range of variances
 variance_range <- max(vars) - min(vars)
@@ -180,7 +187,7 @@ ggplot(data.frame(Variance = vars), aes(x = Variance)) +
   theme_minimal()
 ```
 
-From this frequency plot, we can see that instances for class BRCA are more than that of others followed by KIRC, LUAD and PRAD and class COAD has the least number of instances.
+From the pie chart, we can see that instances for class BRCA are more than that of others followed by KIRC, LUAD and PRAD and class COAD has the least number of instances.
 
 -   [Variance Threshold]{.underline}: From the graph, it's easy to see that most of the columns have low variance. Features with high variance have data points that are spread out over a wide range. These features are considered significant because they contain valuable information that can help in discriminating between different classes or categories. Similarly, features with low variance have data points that have little variation. Such features may not carry much discriminative power and can be considered less significant.
 
@@ -210,25 +217,144 @@ ggplot(average_sorted_gene_expression <- gene_names_df %>% mutate(Expression=app
          arrange(desc(Expression)), aes(x = Expression)) +
   geom_histogram(binwidth = 0.3, fill = "#4B0082", color = "black", aes(y = ..density..), alpha = 0.7) +
   geom_density(fill = "#FF5733", alpha = 0.4) +
-  labs(x = "Average Gene Expression", y = "Density", title = "Distribution") +
+  labs(x = "Average Gene Expression", y = "Density") +
   theme_minimal()
 ```
 
--   [Age specific genderwise cancer incidences]{.underline}: The shapes of the density curves represents the leptokurtic curve for females and mesokurtic curve for males.
+\newpage
+
+## Visualizations
+
+### Age specific gender-wise cancer incidences
+
+The shapes of the density curves represents the leptokurtic curve for females and mesokurtic curve for males.
 
 ```{r}
 #| echo: false
-#| layout-valign: bottom
-#| layout-ncol: 2
 FRE_M <- c(21308, 74872, 341230, 274766)
-dma <- rep(c(15,40,65,80), FRE_M)
-plot(density(dma, bw = 8), xlim = c(3.8,100), ylim = c(0.00105, 0.035), main = "Male Cancer Incidence Density", xlab = "Age")
+dma <- rep(c(15, 40, 65, 80), FRE_M)
+plot(density(dma, bw = 8), xlim = c(3.8, 100), ylim = c(0.00105, 0.035),
+     main = "Age-wise Cancer Incidence Density",
+     xlab = "Age", ylab = "Density", col = "blue")
+
 FRE_F <- c(13709, 94166, 425918, 215458)
-dfe <- rep(c(15,40,65,80), FRE_F)
-plot(density(dfe, bw = 8), xlim = c(3.8,100), ylim = c(0.00105, 0.035), main = "Female Cancer Incidence Density", xlab = "Age")
+dfe <- rep(c(15, 40, 65, 80), FRE_F)
+lines(density(dfe, bw = 8), col = "red",lty=2)
+legend("topleft", legend = c("Male", "Female"), col = c("blue", "red"), lty = c(1,2))
+```
+
+### Gender-wise top ten cancer sites
+
+[**Leading Cancer Sites Among Females**]{.underline}**:**
+
+-   [Breast]{.underline} ($17.89\%$): Major risk factors include female gender, age, family history, genetic mutations (e.g., BRCA$1$ and BRCA$2$), hormonal factors (e.g., early menarche, late menopause), reproductive history and lifestyle factors.
+
+-   [Genital System]{.underline} ($13.55\%$): This includes cancers of the cervix, uterus, ovaries, vagina and vulva. Risk factors vary by site but may include HPV infection, sexual activity, smoking, hormonal factors and genetic predisposition.
+
+-   [Digestive System]{.underline} ($9.60\%$): This includes dietary habits, alcohol consumption, tobacco use and chronic conditions such as obesity and *gastroesophageal reflux disease* (GERD).
+
+-   [Uterine Cervix]{.underline} ($6.55\%$): HPV infection is the primary risk factor, along with smoking, early sexual activity, multiple sexual partners and immuno-suppression.
+
+-   [Oral Cavity and Pharynx]{.underline} ($4.35\%$): Risk factors include including tobacco and alcohol use, HPV infection and poor oral hygiene.
+
+-   [Ovary]{.underline} ($3.82\%$): Risk factors include age, family history, nulliparity, infertility, hormonal factors and possibly endometriosis.
+
+-   [Respiratory System]{.underline} ($2.83\%$) - [Lung and Bronchus]{.underline} ($2.31\%$): Similar risk factors to those in males, primarily smoking and occupational exposures.
+
+-   [Uterine Corpus]{.underline} ($2.31\%$): Risk factors include hormonal factors (e.g., estrogen exposure), obesity, diabetes and certain genetic syndromes.
+
+-   [Endocrine System]{.underline} ($2.31\%$): This includes cancers of the thyroid, adrenal glands and other endocrine organs. Risk factors vary by site but may include radiation exposure, family history and certain genetic syndromes.
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-cap: Top Ten Cancer Sites of Male
+Site_1 <- read.csv("Site_M_F_Cancer.csv")
+Site_1$M_Prop <- paste(as.character(round(Site_1$Male/sum(Site_1$Male) * 100, 2)),
+                       "%", sep = "")
+Site_1$F_Prop <- paste(as.character(round(Site_1$Female/sum(Site_1$Female) * 100, 2)),
+                       "%", sep = "")
+Site <- Site_1[-54,]
+M_Site <- Site[-3]
+F_Site <- Site[-2]
+M_Site_ord <- M_Site[order(Site$Male, decreasing = FALSE),]
+F_Site_ord <- F_Site[order(Site$Female, decreasing = FALSE),]
+m_t <- tail(M_Site_ord, 10)
+f_t <- tail(F_Site_ord, 10)
+ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  geom_text(aes(label = M_Prop), color = "black",
+            position = position_stack(vjust = 1), hjust = -0.20) +
+  labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
+  xlim(0, 200000)
+
+```
+
+[**Leading Cancer Sites Among Males**]{.underline}**:**
+
+-   [Digestive System]{.underline} ($13.06\%$): This includes cancers of the esophagus, stomach, liver, pancreas and colorectal region. Risk factors may include tobacco and alcohol use, dietary habits (e.g., high intake of processed meats) and chronic conditions such as *gastroesophageal reflux disease* (GERD) and *inflammatory bowel disease* (IBD).
+
+-   [Oral Cavity and Pharynx]{.underline} ($11.07\%$): Major risk factors include tobacco use (both smoking and smokeless tobacco), heavy alcohol consumption, *human papillomavirus* (HPV) infection and poor oral hygiene.
+
+-   [Respiratory System]{.underline} ($8.26\%$) - [Lung and Bronchus]{.underline} ($5.73\%$): Smoking, including exposure to secondhand smoke, is the primary risk factor for lung cancer. Occupational exposures to carcinogens such as asbestos, radon and diesel exhaust can also contribute.
+
+-   [Mouth]{.underline} ($4.57\%$): Similar risk factors to oral cavity and pharynx cancers, including tobacco and alcohol use, HPV infection and poor oral hygiene.
+
+-   [Genital System]{.underline} ($4.15\%$) - [Prostate]{.underline} ($3.32\%$): Prostate cancer is influenced by age, family history, and possibly dietary factors. Genetic predisposition and hormonal factors, particularly testosterone, play significant roles.
+
+-   [Tongue]{.underline} ($3.18\%$) - [Other Oral Cavity]{.underline} ($3.09\%$): Risk factors are similar to those for oral cavity and pharynx cancers, including tobacco and alcohol use, HPV infection and poor oral hygiene.
+
+-   [Urinary System]{.underline} ($2.65\%$): This includes cancers of the bladder, kidney and other urinary organs. Risk factors include smoking, occupational exposures, certain medications and genetic factors.
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-cap: Top Ten Cancer Sites of Female
+ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
+  geom_bar(stat = "identity", fill = "deepskyblue3") +
+  geom_text(aes(label = F_Prop), color = "black",
+            position = position_stack(vjust = 1), hjust = -0.20) +
+  labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
+  xlim(0, 240000)
 ```
 
 \newpage
+
+## Spatial Analysis
+
+-   Northern and eastern parts of India show lower cancer incidence compared to regions like Uttar Pradesh, Maharashtra, Bihar, West Bengal, Hyderabad and Tamil Nadu. Hilly areas and Andaman Nicobar islands exhibit lower cancer rates compared to the plains. Western and southeastern parts of India demonstrate moderate cancer incidence.
+
+```{=html}
+<!-- -->
+```
+-   Uttar Pradesh stands out as having the highest cancer incidence among Indian states. Maharashtra, Bihar, West Bengal, Hyderabad and Tamil Nadu also exhibit high numbers of cancer cases.
+
+-   Factors such as pollution, industrial activities and exposure to carcinogens may contribute to higher cancer rates in certain regions.
+
+-   Clean and less polluted environments in hilly areas may contribute to lower cancer rates. Differences in lifestyle patterns, including dietary habits and physical activity levels, may also play a role in the observed regional disparities.
+
+![Year 2022](India_Map_Cancer_2022.png){fig-align="center" width="599" height="504"}
+
+\newpage
+
+We performed a comparative $10$ year gap analysis with the cancer incidences in years, $2011$ and $2021$ respectively.
+
+-   We observed that Karnataka had improved over in cancer eradication whereas Hyderabad plunged to an increment in the number of cancer cases. The Telangana state, formed in $2$ June, $2014$, had a less amount of cancer cases in $2021$. Ladakh was formed as a Union Territory in $31$ October, $2019$. It showed fewer cancer patients in $2021$, possibly due to its smaller population ratio.
+
+-   West Bengal displayed very slight changes in the cancer incidence ratio (i.e., $\tfrac{\text{Total no. of cancer patients in that state}}{\text{Total no. of cancer patients in India}}$) over the $10$-year period.
+
+-   In a quick snapshot, there is a massive increment in the total number of cancer patients nationwide from approximately $160,000$ in $2011$ to around $200,000$ in $2021$. This substantial increase underscores the importance of heightened attention from both the public and government sectors towards cancer eradication efforts and mass awareness campaigns.
+
+::: {#fig-1 layout-ncol="2"}
+![Year 2011](India_Map_Cancer_2011.png){#fig-a width="393"}
+
+![Year 2021](India_Map_Cancer_2021.png){#fig-b width="395"}
+
+A comparative 10 year gap cancer incidence in India
+:::
+
+\newpage
+
 ## Hierarchical clustering
 
 It is a simple but proven method for analyzing gene expression data by building clusters of genes with similar patterns of expression. This is done by iteratively grouping together genes that are highly correlated in their expression matrix. As a result, a dendrogram is generated.
@@ -236,6 +362,7 @@ It is a simple but proven method for analyzing gene expression data by building 
 ![](Heatmap.png){fig-align="center"}
 
 \newpage
+
 ## Principal Component Analysis
 
 Having high dimensionality or feature space can lead model to perform poorly known as the "*Curse of Dimensionality*". To deal with this, we reduce the feature space by performing the dimension reduction technique, Principal Component Analysis (PCA) and we consider $95\%$ variance explainability.
@@ -260,10 +387,10 @@ Each sample has expression values for around $20$K genes. However, it may not be
 
 Now, we try PCA with $600$ and $400$ components which gives $96.54\%$ and $90.81\%$ of variance explained respectively.
 
-::: {#fig-1 layout-ncol="2"}
-![600 Components](download3.png){#fig-a}
+::: {#fig-2 layout-ncol="2"}
+![600 Components](download3.png){#fig-aa}
 
-![400 Components](download4.png){#fig-b}
+![400 Components](download4.png){#fig-bb}
 
 PCA with different components
 :::
@@ -361,6 +488,7 @@ In a one-vs-all t-test scenario, we compare the means of one cancer group (the "
 
 ```{r}
 #| echo: false
+#| cache: false
 perform_one_vs_all_ttests <- function(df, gene) {
   unique_cancer_types <- unique(df$Class)
   p_values <- numeric(length(unique_cancer_types))
@@ -384,3 +512,9 @@ for (gene in selected_genes) {
   perform_one_vs_all_ttests(df, gene)
 }
 ```
+
+\newpage
+
+## Conclusion
+
+[**Acknowledgements**]{.underline}**:** We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
