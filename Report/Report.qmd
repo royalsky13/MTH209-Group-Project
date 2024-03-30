@@ -16,7 +16,6 @@ affiliations:
     name: Department of Mathematics & Statistics, Indian Institute of Technology Kanpur, India
 date: today
 date-format: long
-
 format: 
   pdf:
     number-sections: true
@@ -32,6 +31,8 @@ format:
         \renewcommand*{\Authand}{, }
         \renewcommand*{\Authands}{, }
         \renewcommand\Affilfont{\small}
+execute: 
+  cache: true
 editor: visual
 geometry: margin=1in
 header-includes:
@@ -43,7 +44,7 @@ header-includes:
    - \makeatother
 ---
 
-{r}
+```{r}
 #| label: load-packages
 #| message: false
 #| include: false
@@ -55,18 +56,22 @@ library(ggplot2)
 library(stats)
 library(gplots)
 library(knitr)
+```
 
-{r}
+```{r}
+#| message: false
 #| include: false
 load("ICMR.Rdata")
+```
 
+```{=tex}
 \rule{\textwidth}{0.5 pt}
 \begin{abstract}
 Cancer remains a significant global health challenge, characterized by immense suffering and often limited treatment options. We aim to analyze genetic data related to five common cancer types, each presenting unique challenges and implications for diagnosis and treatment. Our goal is to identify the probable genetic causes underlying these cancers, providing leads for early identification and reducing fatality rates. Focusing on India, we explore the spatial and genetic aspects of cancer, utilizing statistical concepts and analyzing data from specific years. We aim to shed light on cancer prevalence, distribution and genetic underpinnings within the Indian population. Additionally, we investigate gender-specific and age-specific cancer incidence to offer detailed insights into the cancer landscape in India.
 \end{abstract}
 \rule{\textwidth}{0.5 pt}
-
-Introduction
+```
+## Introduction
 
 Cancer is a formidable adversary to human health. It persists as a significant global burden, causing immeasurable suffering and presenting substantial challenges to healthcare systems worldwide. Its insidious nature lies in the uncontrolled growth and dissemination of abnormal cells, disrupting the delicate balance of cellular regulation inherent in the human body's natural processes. Despite remarkable advancements in medical science, the complexities of cancer remain a formidable challenge, often accompanied by limited treatment options and devastating outcomes for affected individuals and their families.
 
@@ -74,84 +79,85 @@ This project endeavors to delve into the multifaceted realm of cancer. With a di
 
 Through this comprehensive exploration of cancer incidence in India, our project aims to contribute to a deeper understanding of the disease landscape. By integrating these aspects, we endeavor to shed light on the complexities of cancer and to ultimately strive towards a future where the burden of cancer is significantly reduced.
 
-Dataset
+## Dataset
 
 In this project, we deal with multiple datasets that are based on cancer patients and the nature of cancer in both male and female human bodies.
 
-1. Cancer causing genes dataset: The input dataset contains $802$ samples corresponding to $802$ people who have been detected with different types of cancer. Each sample contains expression values of more than $20$K genes. Samples are categorized into one of the following types of tumors: BRCA, KIRC, COAD, LUAD and PRAD.
+[**1. Cancer causing genes dataset:**](https://www.kaggle.com/datasets/shibumohapatra/icmr-data?select=data.csv) The input dataset contains $802$ samples corresponding to $802$ people who have been detected with different types of cancer. Each sample contains expression values of more than $20$K genes. Samples are categorized into one of the following types of tumors: BRCA, KIRC, COAD, LUAD and PRAD.
 
-Here's an extended description of the tumors associated with this dataset:
+Following is an extended description of the tumors associated with this dataset:
 
-BRCA (Breast Cancer): Breast cancer is one of the most common cancers among women. It originates in the breast tissue and can occur in both men and women.
+-   [BRCA (Breast Cancer)]{.underline}: Breast cancer is one of the most common cancers among women. It originates in the breast tissue and can occur in both men and women.
 
-KIRC (Renal Cancer): Renal cell carcinoma, or kidney cancer, occurs in the lining of small tubes in the kidney.
+-   [KIRC (Renal Cancer)]{.underline}: Renal cell carcinoma, or kidney cancer, occurs in the lining of small tubes in the kidney.
 
-COAD (Colon Cancer): Colorectal cancer includes colon cancer (affecting the large intestine) and rectal cancer (affecting the rectum). Colon cancer is a major cause of cancer-related deaths.
+-   [COAD (Colon Cancer)]{.underline}: Colorectal cancer includes colon cancer (affecting the large intestine) and rectal cancer (affecting the rectum). Colon cancer is a major cause of cancer-related deaths.
 
-LUAD (Lung Cancer - Adenocarcinoma): Lung adenocarcinoma is a subtype of non-small cell lung cancer. It originates in the cells lining the airways and is one of the most common types of lung cancer.
+-   [LUAD (Lung Cancer - *Adenocarcinoma*)]{.underline}: Lung *adenocarcinoma* is a subtype of non-small cell lung cancer. It originates in the cells lining the airways and is one of the most common types of lung cancer.
 
-PRAD (Prostate Cancer): Prostate cancer occurs in the prostate, a small gland in men that produces seminal fluid. It is one of the most common cancers in men.
+-   [PRAD (Prostate Cancer)]{.underline}: Prostate cancer occurs in the prostate, a small gland in men that produces seminal fluid. It is one of the most common cancers in men.
 
-2. Estimated State-wise cancer incidences: The table provides estimated incidence of cancer cases in India by States and Union Territory-wise for all sites and for both sexes.
+[**2. Estimated State-wise cancer incidences:**](https://sansad.in/getFile/loksabhaquestions/annex/1712/AU1399.pdf?source=pqals) The table provides estimated incidence of cancer cases in India by States and Union Territory-wise for all sites and for both sexes.
 
-3. Gender-wise different sites of cancer: The table presents the estimated cancer incidence, number of cases, crude rate, and cumulative risk by sex and anatomical sites in India for the year $2022$.
+[**3. Gender-wise different sites of cancer:**](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231735/table/ijmr_1821_22-t001/?report=objectonly) The table presents the estimated cancer incidence, number of cases, crude rate, and cumulative risk by sex and anatomical sites in India for the year $2022$.
 
-Here's an extended description of the terminologies associated with this dataset:
+Following is an extended description of the terminologies associated with this dataset:
 
-Cum-risk: Cumulative risk of developing cancer in the age range of $0$ to $74$ years. It represents the likelihood or probability of an individual developing cancer within this specified age range.
+-   [Cum-risk]{.underline}: Cumulative risk of developing cancer in the age range of $0$ to $74$ years. It represents the likelihood or probability of an individual developing cancer within this specified age range.
 
-$$
-\boxed{\text{Cumulative Risk} = \tfrac{\text{Number of Cancer Cases}}{\text{Total Population}} \times 100}
-$$
+    $$
+    \boxed{\text{Cumulative Risk} = \tfrac{\text{Number of Cancer Cases}}{\text{Total Population}} \times 100}
+    $$
 
-Crude Rate (CR): Crude rate refers to the total number of cancer cases occurring in a population divided by the total population, expressed as a rate per a specific unit of time (usually per $100,000$ population). It provides a general overview of cancer incidence within a population, without considering factors such as age distribution.
+-   [Crude Rate (CR)]{.underline}: Crude rate refers to the total number of cancer cases occurring in a population divided by the total population, expressed as a rate per a specific unit of time (usually per $100,000$ population). It provides a general overview of cancer incidence within a population, without considering factors such as age distribution.
 
-$$
-\boxed{\text{Crude Rate}=\tfrac{\text{Number of Cancer Cases}}{\text{Total Population}}\times 100,000}
-$$
+    $$
+    \boxed{\text{Crude Rate}=\tfrac{\text{Number of Cancer Cases}}{\text{Total Population}}\times 100,000}
+    $$
 
-Age-Adjusted Rate (AAR): Age adjusted rate is a standardized rate that takes into account the age distribution of a population. It allows for fair comparisons of cancer rates between different populations or over time by removing the influence of age as a confounding factor. $$
-\boxed{\text{Age-Adjusted Rate
-}= \sum_{i=1}^n\left(\tfrac{\text{Age-specific rate}_i \times \text{Population}_i}{\text{Total Population}}\right) \times 100,000} $$
+-   [Age-Adjusted Rate (AAR)]{.underline}: Age adjusted rate is a standardized rate that takes into account the age distribution of a population. It allows for fair comparisons of cancer rates between different populations or over time by removing the influence of age as a confounding factor. $$
+    \boxed{\text{Age-Adjusted Rate
+    }= \sum_{i=1}^n\left(\tfrac{\text{Age-specific rate}_i \times \text{Population}_i}{\text{Total Population}}\right) \times 100,000} $$
 
-Malig Imn.Prol D (Malignant Immunoproliferative Diseases): This term refers to a group of disorders characterized by the abnormal proliferation of immune cells, leading to the development of malignancies. These diseases involve the uncontrolled growth of cells of the immune system, such as lymphocytes or plasma cells, and can include conditions like lymphomas, leukemias and multiple myeloma.
+-   [Malig Imn.Prol D (Malignant Immunoproliferative Diseases)]{.underline}: This term refers to a group of disorders characterized by the abnormal proliferation of immune cells, leading to the development of malignancies. These diseases involve the uncontrolled growth of cells of the immune system, such as lymphocytes or plasma cells, and can include conditions like lymphomas, leukemias and multiple myeloma.
 
-4. Age-wise cancer incidences: The table provides gender-disaggregated, estimated top five leading sites of cancer ($\%$) in India by age group ($0-14, 15-39, 40-64 \ \& \ 65^+$ age groups) for the year $2022$.
+[**4. Age-wise cancer incidences:**](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231735/table/ijmr_1821_22-t002/?report=objectonly) The table provides gender-disaggregated, estimated top five leading sites of cancer ($\%$) in India by age group ($0-14, 15-39, 40-64 \ \& \ 65^+$ age groups) for the year $2022$.
 
-Data Pre-processing and Cleaning
+## Data Pre-processing and Cleaning
 
-We conducted data pre-processing and cleaning tasks on two datasets: "data.csv" and "labels.csv". These datasets contain information related to cancer research, focusing specially on genetic data and associated labels.
+We conducted data pre-processing and cleaning tasks on two datasets: "`data.csv`" and "`labels.csv`". These datasets contain information related to cancer research, focusing specially on genetic data and associated labels.
 
-1. Essential Packages: For this project, we utilized several essential packages in R, including tibble, tidyverse and dplyr.
+**1. Essential Packages:** For this project, we utilized several essential packages in `R`, including `tibble`, `tidyverse` and `dplyr`.
 
-2. Pre-processing: This step is very crucial pertaining to the complexity and volume of genetic data involved.
+**2. Pre-processing:** This step is very crucial pertaining to the complexity and volume of genetic data involved.
 
-Data Importing: Our code reads the CSV files "data.csv" and "labels.csv" into R as tibbles using the read.csv() function. These datasets contain genetic data and label information related to cancer research.
+-   [Data Importing:]{.underline} Our code reads the CSV files "`data.csv`" and "`labels.csv`" into `R` as tibbles using the `read.csv()` function. These datasets contain genetic data and label information related to cancer research.
 
-Exploratory Data Analysis (EDA): We performed EDA to gain insights into the structure and content of the datasets. This involved examining the structure of both datasets using the str() function and displaying the first few entries of each dataset using the head() function.
+-   [Exploratory Data Analysis (EDA):]{.underline} We performed EDA to gain insights into the structure and content of the datasets. This involved examining the structure of both datasets using the `str()` function and displaying the first few entries of each dataset using the `head()` function.
 
-Categorical Variable Conversion: We converted some columns in the datasets from character type to factor type using the as.factor() function. This was necessary for categorical variables. We also converted the final dataframe into a more structured format, tibble to facilitate efficient analysis.
+-   [Categorical Variable Conversion:]{.underline} We converted some columns in the datasets from *character* type to *factor* type using the `as.factor()` function. This was necessary for categorical variables. We also converted the final dataframe into a more structured format, *tibble* to facilitate efficient analysis.
 
-Data Merging: We merged the two datasets into a single dataframe using the cbind() function, combining the label information with the genetic data.
+-   [Data Merging:]{.underline} We merged the two datasets into a single dataframe using the `cbind()` function, combining the label information with the genetic data.
 
-Data Quality Checks: We checked for null values (is.null()), NA values (is.na()), and duplicated entries (duplicated()) in the merged dataframe. The absence of such issues indicates clean data.
+-   [Data Quality Checks:]{.underline} We checked for null values (`is.null()`), NA values (`is.na()`), and duplicated entries (`duplicated()`) in the merged dataframe. The absence of such issues indicates clean data.
 
-Summary Statistics: We calculated summary statistics for the genetic data to understand its distribution and characteristics using the summary() function.
+-   [Summary Statistics:]{.underline} We calculated summary statistics for the genetic data to understand its distribution and characteristics using the `summary()` function.
 
-{r}
-#| echo: false
-#| tbl-cap: Summary statistics for Genes 1 and 2
-kable(summary(df[c(4,5)]))
+    ```{r}
+    #| echo: false
+    #| tbl-cap: Summary statistics for Genes 1 and 2
+    kable(summary(df[c(4,5)]))
+    ```
 
-The processed dataframe contains both label information and genetic data. It is saved in the ".Rdata" format for further analysis and modelling.
+The processed dataframe contains both label information and genetic data. It is saved in the "`.Rdata`" format for further analysis and modelling.
 
-{{< pagebreak >}}
+\newpage
 
-Data Insights
+## Data Insights
 
 The data we have, has $20,534$ columns with $800$ rows, as mentioned in the description. And distribution of classes is given below:
 
-{r}
+```{r}
 #| echo: false
 #| layout-valign: bottom
 #| fig-subcap: 
@@ -172,14 +178,15 @@ ggplot(data.frame(Variance = vars), aes(x = Variance)) +
   geom_histogram(bins = 20, fill = 'pink', color = 'black') +
   labs(x = 'Variance Range', y = 'Frequency', title = 'Histogram') +
   theme_minimal()
+```
 
-From the frequency plot, we can see that instances for class BRCA are more than that of others followed by KIRC, LUAD and PRAD and class COAD has the least number of instances.
+From this frequency plot, we can see that instances for class BRCA are more than that of others followed by KIRC, LUAD and PRAD and class COAD has the least number of instances.
 
-Variance Threshold: From the graph, it's easy to see that most of the columns have low variance. Features with high variance have data points that are spread out over a wide range. These features are considered significant because they contain valuable information that can help in discriminating between different classes or categories. Similarly, features with low variance have data points that have little variation. Such features may not carry much discriminative power and can be considered less significant.
+-   [Variance Threshold]{.underline}: From the graph, it's easy to see that most of the columns have low variance. Features with high variance have data points that are spread out over a wide range. These features are considered significant because they contain valuable information that can help in discriminating between different classes or categories. Similarly, features with low variance have data points that have little variation. Such features may not carry much discriminative power and can be considered less significant.
 
-Distribution of average gene expression levels: We calculated the average expression values for each gene across all samples, sorting them in descending order based on these averages. The top $5$ genes with the highest average expression values are displayed in a tabular format.
+-   [Distribution of average gene expression levels]{.underline}: We calculated the average expression values for each gene across all samples, sorting them in descending order based on these averages. The top $5$ genes with the highest average expression values are displayed in a tabular format.
 
-{r}
+```{r}
 #| echo: false
 #| warning: false
 #| tbl-cap: Genes with highest mean expression value
@@ -188,12 +195,13 @@ colnames(gene_names_df) <- "Gene"
 gene_names_df$Gene <- as.factor(gene_names_df$Gene)
 average_sorted_gene_expression <- gene_names_df %>% mutate(Expression=apply(df[-c(1,2)], 2, mean)) %>% arrange(desc(Expression))
 kable(head(average_sorted_gene_expression, 5))
+```
 
 \newpage
 
 Following this, we generated a histogram and density plot to illustrate the distribution of average gene expression values.
 
-{r}
+```{r}
 #| echo: false
 #| warning: false
 #| fig-align: center
@@ -204,10 +212,11 @@ ggplot(average_sorted_gene_expression <- gene_names_df %>% mutate(Expression=app
   geom_density(fill = "#FF5733", alpha = 0.4) +
   labs(x = "Average Gene Expression", y = "Density", title = "Distribution") +
   theme_minimal()
+```
 
-Age specific genderwise cancer incidences: The shapes of the density curves represents the leptokurtic curve for females and mesokurtic curve for males.
+-   [Age specific genderwise cancer incidences]{.underline}: The shapes of the density curves represents the leptokurtic curve for females and mesokurtic curve for males.
 
-{r}
+```{r}
 #| echo: false
 #| layout-valign: bottom
 #| layout-ncol: 2
@@ -217,34 +226,75 @@ plot(density(dma, bw = 8), xlim = c(3.8,100), ylim = c(0.00105, 0.035), main = "
 FRE_F <- c(13709, 94166, 425918, 215458)
 dfe <- rep(c(15,40,65,80), FRE_F)
 plot(density(dfe, bw = 8), xlim = c(3.8,100), ylim = c(0.00105, 0.035), main = "Female Cancer Incidence Density", xlab = "Age")
+```
 
-{{< pagebreak >}}
+\newpage
+## Hierarchical clustering
 
-Parametric Tests
+It is a simple but proven method for analyzing gene expression data by building clusters of genes with similar patterns of expression. This is done by iteratively grouping together genes that are highly correlated in their expression matrix. As a result, a dendrogram is generated.
 
-Multiple F-tests
+![](Heatmap.png){fig-align="center"}
 
-We want to determine whether means of gene information encoded by a particular gene (response) differ statistically significantly among the independent cancer groups (covariates). In this case, with reference to the ICMR dataset, the independent categorical variable is the 'Class' column which represents the $5$ different cancer types. The dependent variable is the gene expression levels of a specific gene. We analyze each gene individually in this setup, making it multiple F-tests.
+\newpage
+## Principal Component Analysis
+
+Having high dimensionality or feature space can lead model to perform poorly known as the "*Curse of Dimensionality*". To deal with this, we reduce the feature space by performing the dimension reduction technique, Principal Component Analysis (PCA) and we consider $95\%$ variance explainability.
+
+Each sample has expression values for around $20$K genes. However, it may not be necessary to include all $20$K gene expression values to analyze each cancer type. Therefore, we need to identify a smaller set of attributes which would then be used to fit multiclass classification models. So, the first task targets dimensionality reduction using PCA.
+
+![](download1.png){fig-align="center" width="466"}
+
+-   PCA effectively reduces the high-dimensional data to $2$-dimensions and provides insights into the distribution of different cancer types. The use of color to represent different cancer types allows for easy differentiation and understanding of the data.
+
+-   This plot shows that there are distinct clusters formed by different cancer types, indicating that the gene expression patterns vary across different cancer types.
+
+-   Although some genes overlap between the clusters, the plot does not show any clear separation between all cancer types.
+
+[Cumulative Explained Variance Plot]{.underline}:
+
+![](download2.png){fig-align="center" width="448"}
+
+-   This plot shows the cumulative sum of the explained variances for the components. The '*elbow*' or point where the curve starts to level off is often used to decide how many components one wants to keep.
+
+-   From this curve, we see that it starts to flatten around $150$ - $200$ PCs, suggesting a potential elbow point in this range.
+
+Now, we try PCA with $600$ and $400$ components which gives $96.54\%$ and $90.81\%$ of variance explained respectively.
+
+::: {#fig-1 layout-ncol="2"}
+![600 Components](download3.png){#fig-a}
+
+![400 Components](download4.png){#fig-b}
+
+PCA with different components
+:::
+
+\newpage
+
+## Parametric Tests
+
+### Multiple F-tests
+
+We want to determine whether means of gene information encoded by a particular gene (*response*) differ statistically significantly among the independent cancer groups (*covariates*). In this case, with reference to the `ICMR` dataset, the independent categorical variable is the '`Class`' column which represents the $5$ different cancer types. The dependent variable is the gene expression levels of a specific gene. We analyze each gene individually in this setup, making it [multiple F-tests]{.underline}.
 
 We have,
 
-$5$ groups (categories of cancer types)
+-   $5$ groups (categories of cancer types)
 
-$n_i$ observations in the $i^{\text{th}}$ group (where $i=1,2,\ldots,5$)
+-   $n_i$ observations in the $i^{\text{th}}$ group (where $i=1,2,\ldots,5$)
 
-$N$ total observations ($N = n_1+n_2+\ldots+n_5$)
+-   $N$ total observations ($N = n_1+n_2+\ldots+n_5$)
 
-$X_{ij}$ is the observation in the $i^{\text{th}}$ group and the $j^{\text{th}}$ gene expression level ($j=1,2,\ldots,20532$)
+-   $X_{ij}$ is the observation in the $i^{\text{th}}$ group and the $j^{\text{th}}$ gene expression level ($j=1,2,\ldots,20532$)
 
-$X \approx \mathcal{N}(\mu,\,\sigma^{2})\, \text{ for large sample size}$ where $X$ is a random variable that denotes gene expression for a particular gene with mean $\mu$ and variance $\sigma^2$.
+-   $X \approx \mathcal{N}(\mu,\,\sigma^{2})\, \text{ for large sample size}$ where $X$ is a random variable that denotes gene expression for a particular gene with mean $\mu$ and variance $\sigma^2$.
 
 The null hypothesis ($\text{H}_0$) for each F-test is that there are no differences in mean gene expression levels among the different cancer types. $$\text{H}_0: \mu_1=\mu_2=\ldots=\mu_5$$ where: $\mu_\text{i}$ is the population mean of the $i^{\text{th}}$ group.
 
 The alternative hypothesis ($\text{H}_1$) is that at least one pair of mean gene expression levels is different. $$\text{H}_1: \text{At least one} \ μ_{\text{i}} \text{ is different from the others.}$$ To test these hypotheses, we calculate the F-statistic: $\text{F}=\tfrac{\text{Between-group variance}}{\text{Within-group variance}}$
 
-Rejection Criteria: If the p-value associated with the F-statistic is below a certain threshold (typically $0.05$), we reject the null hypothesis.
+[Rejection Criteria]{.underline}: If the p-value associated with the F-statistic is below a certain threshold (typically $0.05$), we reject the null hypothesis.
 
-{r}
+```{r}
 #| echo: false
 #| layout-ncol: 2
 X <- as.matrix(df[ , -c(1,2)]) 
@@ -287,30 +337,29 @@ result_df <- result_df[result_df$p_value<0.05, ]
 variances_sorted <- result_df %>% arrange(desc(variance))
 kable(head(variances_sorted, 3), caption = "Top 3 high variance genes")
 kable(tail(variances_sorted, 3), caption = "Bottom 3 high variance genes", row.names = FALSE)
+```
 
 \newpage
 
-One vs. All t-test
+### One vs. All t-test
 
-In a one-vs-all t-test scenario, we compare the means of one cancer group (the "one" group) against the means of all other cancer groups excluding that group (the "all" group). It's commonly used in situations where one wants to compare a specific group against the rest of the data.
+In a one-vs-all t-test scenario, we compare the means of one cancer group (the "*one*" group) against the means of all other groups excluding that cancer group (the "*all*" group). It's commonly used in situations where one wants to compare a specific group against the rest of the data.
 
-Null Hypothesis ($\text{H}_0$): The null hypothesis assumes that there is no difference between the means of the "one" group and the means of the "all" group. $$\text{H}_0:\mu_\text{one}=\mu_\text{all}$$
+-   [Null Hypothesis]{.underline} ($\text{H}_0$): The null hypothesis assumes that there is no difference between the means of the "*one*" group and the means of the "*all*" group. $$\text{H}_0:\mu_\text{one}=\mu_\text{all}$$
 
-Alternative Hypothesis ($\text{H}_1$): The alternative hypothesis states that the means of the "one" group and the "all" group are different. $$\text{H}_1:\mu_\text{one}\neq\mu_\text{all}$$
+-   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The alternative hypothesis states that the means of the "*one*" group and the "*all*" group are different. $$\text{H}_1:\mu_\text{one}\neq\mu_\text{all}$$
 
-Test Statistic: $t = \dfrac{\bar{x_1}-\bar{x_2}}{\sqrt{\dfrac{s_1^2}{n_1}+ \dfrac{s_2^2}{n_2} } }$ where:
+-   [Test Statistic]{.underline}: $t = \dfrac{\bar{x_1}-\bar{x_2}}{\sqrt{\dfrac{s_1^2}{n_1}+ \dfrac{s_2^2}{n_2} } }$ where:
 
-$\bar{x_1}$ and $\bar{x_2}$ are the means of the "one" group and the "all" group respectively.
+    -   $\bar{x_1}$ and $\bar{x_2}$ are the means of the "*one*" group and the "*all*" group respectively.
+    -   $s_1$ and $s_2$ are the standard deviations of the "*one*" group and the "*all*" group respectively.
+    -   $n_1$ and $n_2$ are the sample sizes of the "*one*" group and the "*all*" group respectively.
 
-$s_1$ and $s_2$ are the standard deviations of the "one" group and the "all" group respectively.
+-   [Rejection Criteria]{.underline}: If the p-value is smaller than a predetermined significance level (commonly $0.05$), we reject the null hypothesis.
 
-$n_1$ and $n_2$ are the sample sizes of the "one" group and the "all" group respectively.
+-   [Results]{.underline}: We perform this test for the top $3$ high variance genes.
 
-Rejection Criteria: If the p-value is smaller than a predetermined significance level (commonly $0.05$), we reject the null hypothesis.
-
-Results: We perform this test for the top $3$ high variance genes.
-
-{r}
+```{r}
 #| echo: false
 perform_one_vs_all_ttests <- function(df, gene) {
   unique_cancer_types <- unique(df$Class)
@@ -334,4 +383,4 @@ for (gene in selected_genes) {
   cat(paste("Performing 'one vs. all' t-tests for", gene, ":\n"))
   perform_one_vs_all_ttests(df, gene)
 }
-
+```
