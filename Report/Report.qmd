@@ -281,12 +281,12 @@ M_Site_ord <- M_Site[order(Site$Male, decreasing = FALSE),]
 F_Site_ord <- F_Site[order(Site$Female, decreasing = FALSE),]
 m_t <- tail(M_Site_ord, 10)
 f_t <- tail(F_Site_ord, 10)
-ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
-  geom_bar(stat = "identity", fill = "cornflowerblue") +
-  geom_text(aes(label = M_Prop), color = "black",
+ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
+  geom_bar(stat = "identity", fill = "deepskyblue3") +
+  geom_text(aes(label = F_Prop), color = "black",
             position = position_stack(vjust = 1), hjust = -0.20) +
   labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
-  xlim(0, 200000)
+  xlim(0, 240000)
 
 ```
 
@@ -310,12 +310,12 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 #| echo: false
 #| fig-align: center
 #| fig-cap: Top Ten Cancer Sites of Female
-ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
-  geom_bar(stat = "identity", fill = "deepskyblue3") +
-  geom_text(aes(label = F_Prop), color = "black",
+ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  geom_text(aes(label = M_Prop), color = "black",
             position = position_stack(vjust = 1), hjust = -0.20) +
   labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
-  xlim(0, 240000)
+  xlim(0, 200000)
 ```
 
 \newpage
