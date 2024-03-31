@@ -5,9 +5,9 @@ author:
     affil-id: "*"
   - name: Swapnonil Mondal (231080098)
     affil-id: "*"
-  - name: Sujash Krishna Basak (231080093)
-    affil-id: "*"
   - name: Sameer Verma (220949)
+    affil-id: "*"
+  - name: Sujash Krishna Basak (231080093)
     affil-id: "*"
   - name: Sayanta Biswas (231080080)
     affil-id: "*"
@@ -339,7 +339,7 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 
 We performed a comparative $10$ year gap analysis with the cancer incidences in years, $2011$ and $2021$ respectively.
 
--   We observed that Karnataka had improved over in cancer eradication whereas Hyderabad plunged to an increment in the number of cancer cases. The Telangana state, formed in $2$ June, $2014$, had a less amount of cancer cases in $2021$. Ladakh was formed as a Union Territory in $31$ October, $2019$. It showed fewer cancer patients in $2021$, possibly due to its smaller population ratio.
+-   We observed that Karnataka had improved over in cancer eradication whereas Hyderabad plunged to an increment in the number of cancer cases. The Telangana state, formed in $2$ June, $2014$, had less amount of cancer cases in $2021$. Ladakh was formed as a Union Territory in $31$ October, $2019$. It showed fewer cancer patients in $2021$, possibly due to its smaller population ratio.
 
 -   West Bengal displayed very slight changes in the cancer incidence ratio (i.e., $\tfrac{\text{Total no. of cancer patients in that state}}{\text{Total no. of cancer patients in India}}$) over the $10$-year period.
 
@@ -388,9 +388,9 @@ Each sample has expression values for around $20$K genes. However, it may not be
 Now, we try PCA with $600$ and $400$ components which gives $96.54\%$ and $90.81\%$ of variance explained respectively.
 
 ::: {#fig-2 layout-ncol="2"}
-![600 Components](download3.png){#fig-aa}
+![600 Components](download3.png){#fig-c}
 
-![400 Components](download4.png){#fig-bb}
+![400 Components](download4.png){#fig-d}
 
 PCA with different components
 :::
@@ -518,3 +518,5 @@ for (gene in selected_genes) {
 ## Conclusion
 
 [**Acknowledgements**]{.underline}**:** We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
+
+Fundamentals of Statistics (Volume One); A.M.Gun, M.K.Gupta, B.Dasgupta; The World Press Pvt. Ltd., 2019.
