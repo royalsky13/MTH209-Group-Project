@@ -57,7 +57,7 @@ library(ggplot2)
 ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
   geom_bar(stat = "identity", fill = "cornflowerblue") +
   geom_text(aes(label = M_Prop), color = "black",
-            position = position_stack(vjust = 1), hjust = -0.20) +
+            position = position_stack(vjust = 1), hjust = -0.15) +
   labs(title = "Top Ten Cancer Sites of Male",
        y = "", x = "Frequency") +
   xlim(0, 200000)
@@ -65,10 +65,10 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
   geom_bar(stat = "identity", fill = "deepskyblue3") +
   geom_text(aes(label = F_Prop), color = "black",
-            position = position_stack(vjust = 1), hjust = -0.20) +
+            position = position_stack(vjust = 1), hjust = -0.15) +
   labs(title = "Top Ten Cancer Sites of Female",
        y = "", x = "Frequency") +
-  xlim(0, 240000)
+  xlim(0, 253000)
 
 #==============================================================================#
 ################ Different type of Cancer Sites Visualization ##################
