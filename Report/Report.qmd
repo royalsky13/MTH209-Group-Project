@@ -15,9 +15,11 @@ affiliations:
   - id: "*"
     name: Department of Mathematics & Statistics, Indian Institute of Technology Kanpur, India
 date: today
+toc: false
 date-format: long
 format: 
   pdf:
+    thanks: We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
     number-sections: true
     number-depth: 2
     keep-tex: true
@@ -44,6 +46,11 @@ header-includes:
    - \makeatother
 ---
 
+```{=latex}
+\vspace{11.5cm}
+\tableofcontents{}
+```
+
 ```{r}
 #| label: load-packages
 #| message: false
@@ -63,6 +70,8 @@ library(knitr)
 #| include: false
 load("ICMR.Rdata")
 ```
+
+\newpage
 
 ```{=tex}
 \rule{\textwidth}{0.5 pt}
@@ -161,7 +170,7 @@ The data we have, has $20,534$ columns with $800$ rows, as mentioned in the desc
 #| echo: false
 #| layout-valign: bottom
 #| fig-subcap: 
-#|   - "Frequency of Classes"
+#|   - "Proportion of Classes"
 #|   - "Histogram of Variance Range"
 #| layout-ncol: 2
 Can_lab <- df[c(1,2)]
@@ -268,7 +277,7 @@ legend("topleft", legend = c("Male", "Female"), col = c("blue", "red"), lty = c(
 ```{r}
 #| echo: false
 #| fig-align: center
-#| fig-cap: Top Ten Cancer Sites of Male
+#| fig-cap: Top Ten Cancer Sites of Female
 Site_1 <- read.csv("Site_M_F_Cancer.csv")
 Site_1$M_Prop <- paste(as.character(round(Site_1$Male/sum(Site_1$Male) * 100, 2)),
                        "%", sep = "")
@@ -281,12 +290,17 @@ M_Site_ord <- M_Site[order(Site$Male, decreasing = FALSE),]
 F_Site_ord <- F_Site[order(Site$Female, decreasing = FALSE),]
 m_t <- tail(M_Site_ord, 10)
 f_t <- tail(F_Site_ord, 10)
-ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
+ggplot(f_t, aes(x = reorder(Site, Female), y = Female)) +
   geom_bar(stat = "identity", fill = "deepskyblue3") +
-  geom_text(aes(label = F_Prop), color = "black",
+  geom_text(aes(label = F_Prop), color = "black", 
             position = position_stack(vjust = 1), hjust = -0.20) +
-  labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
-  xlim(0, 240000)
+  labs(title = "Top Ten Cancer Sites",
+       y = "Frequency", x = "Cancer Site") +
+  theme(panel.background = element_blank(),
+        axis.line.x = element_line("gray40"),
+        axis.line.y = element_line("gray40")) +
+  scale_y_continuous(limits = c(0, 250000), expand = c(0,0)) +
+  coord_flip()
 
 ```
 
@@ -309,13 +323,18 @@ ggplot(f_t, aes(x = Female, y = reorder(Site, Female))) +
 ```{r}
 #| echo: false
 #| fig-align: center
-#| fig-cap: Top Ten Cancer Sites of Female
-ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
+#| fig-cap: Top Ten Cancer Sites of Male
+ggplot(m_t, aes(x = reorder(Site, Male), y = Male)) +
   geom_bar(stat = "identity", fill = "cornflowerblue") +
-  geom_text(aes(label = M_Prop), color = "black",
+  geom_text(aes(label = M_Prop), color = "black", 
             position = position_stack(vjust = 1), hjust = -0.20) +
-  labs(title="Top Ten Cancer Sites",y = "", x = "Frequency") +
-  xlim(0, 200000)
+  labs(title = "Top Ten Cancer Sites",
+       y = "Frequency", x = "Cancer Site") +
+  theme(panel.background = element_blank(),
+        axis.line.x = element_line("gray40"),
+        axis.line.y = element_line("gray40")) +
+  scale_y_continuous(limits = c(0, 200000), expand = c(0,0)) +
+  coord_flip()  
 ```
 
 \newpage
@@ -324,9 +343,6 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 
 -   Northern and eastern parts of India show lower cancer incidence compared to regions like Uttar Pradesh, Maharashtra, Bihar, West Bengal, Hyderabad and Tamil Nadu. Hilly areas and Andaman Nicobar islands exhibit lower cancer rates compared to the plains. Western and southeastern parts of India demonstrate moderate cancer incidence.
 
-```{=html}
-<!-- -->
-```
 -   Uttar Pradesh stands out as having the highest cancer incidence among Indian states. Maharashtra, Bihar, West Bengal, Hyderabad and Tamil Nadu also exhibit high numbers of cancer cases.
 
 -   Factors such as pollution, industrial activities and exposure to carcinogens may contribute to higher cancer rates in certain regions.
@@ -339,7 +355,7 @@ ggplot(m_t, aes(x = Male, y = reorder(Site, Male))) +
 
 We performed a comparative $10$ year gap analysis with the cancer incidences in years, $2011$ and $2021$ respectively.
 
--   We observed that Karnataka had improved over in cancer eradication whereas Hyderabad plunged to an increment in the number of cancer cases. The Telangana state, formed in $2$ June, $2014$, had less amount of cancer cases in $2021$. Ladakh was formed as a Union Territory in $31$ October, $2019$. It showed fewer cancer patients in $2021$, possibly due to its smaller population ratio.
+-   We observed that Karnataka had improved over in cancer eradication whereas Hyderabad plunged to an increment in the number of cancer cases. The Telangana state, formed in $2$ June, $2014$, had less amount of cancer cases in $2021$. Ladakh was formed as a Union Territory in $31$ October, $2019$. It showed few cancer patients in $2021$, possibly due to its smaller population ratio.
 
 -   West Bengal displayed very slight changes in the cancer incidence ratio (i.e., $\tfrac{\text{Total no. of cancer patients in that state}}{\text{Total no. of cancer patients in India}}$) over the $10$-year period.
 
@@ -413,11 +429,11 @@ We have,
 
 -   $X_{ij}$ is the observation in the $i^{\text{th}}$ group and the $j^{\text{th}}$ gene expression level ($j=1,2,\ldots,20532$)
 
--   $X \approx \mathcal{N}(\mu,\,\sigma^{2})\, \text{ for large sample size}$ where $X$ is a random variable that denotes gene expression for a particular gene with mean $\mu$ and variance $\sigma^2$.
+-   $\bar{X_n} \stackrel{asym}{\sim} \mathcal{N}(\mu,\,\tfrac{\sigma^{2}}{n})$ i.e.,$\dfrac{\sqrt{n}(\bar{X_n}-\mu)}{\sigma}\xrightarrow[]{d} \mathcal{N}(0,\,1) \text{ as } \boxed{n \rightarrow \infty}$ (by [Central Limit Theorem]{.underline}) where $\bar{X_n}$ is a random variable with mean $\mu$ and variance $\tfrac{\sigma^2}{n}$ that denotes mean gene expression for a particular gene.
 
-The null hypothesis ($\text{H}_0$) for each F-test is that there are no differences in mean gene expression levels among the different cancer types. $$\text{H}_0: \mu_1=\mu_2=\ldots=\mu_5$$ where: $\mu_\text{i}$ is the population mean of the $i^{\text{th}}$ group.
+The null hypothesis ($\text{H}_0$) for each F-test is that there are no differences in mean gene expression levels among the different cancer types. $$\text{H}_0: \mu_1=\mu_2=\ldots=\mu_5$$ where: $\mu_{i}$ is the population mean of the $i^{\text{th}}$ group.
 
-The alternative hypothesis ($\text{H}_1$) is that at least one pair of mean gene expression levels is different. $$\text{H}_1: \text{At least one} \ μ_{\text{i}} \text{ is different from the others.}$$ To test these hypotheses, we calculate the F-statistic: $\text{F}=\tfrac{\text{Between-group variance}}{\text{Within-group variance}}$
+The alternative hypothesis ($\text{H}_1$) is that at least one pair of mean gene expression levels is different. $$\text{H}_1: \text{At least one} \ μ_{i} \text{ is different from the others.}$$ To test these hypotheses, we calculate the F-statistic: $\text{F}=\tfrac{\text{Between-group variance}}{\text{Within-group variance}}$
 
 [Rejection Criteria]{.underline}: If the p-value associated with the F-statistic is below a certain threshold (typically $0.05$), we reject the null hypothesis.
 
@@ -515,8 +531,96 @@ for (gene in selected_genes) {
 
 \newpage
 
+## Non-Parametric Tests
+```{r}
+#| echo: false
+#| layout-ncol: 2
+##Generating a synthetic dataset for female cancer patients 
+FRE_F <- c(13709, 94166, 425918, 215458)
+dfem <- rep(c(15,40, 65, 80), FRE_F)
+
+### first decide the bandwidth
+bw1 = 4.89
+f <- density(dfem, bw = bw1)$x #female age values
+density_f <- density(dfem, bw = bw1)$y #corresponding densities
+plot(f, density_f, type = "l", xlab = "Age of Female Cancer Patients",
+     ylab = "density")
+
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+
+### first decide the bandwidth
+bw2 = 4.89
+m <- density(dma, bw = bw2)$x #male age values
+density_m <- density(dma, bw = bw2)$y #corresponding densities
+plot(m, density_m, type = "l", xlab = "Age of male Cancer Patients",
+     ylab = "density")
+
+```
+```{r}
+#| layout-ncol: 2
+#| echo: false
+sorted_vals_f <- sort(f)
+#cumulative density
+cum_density_f <- cumsum(density_f)
+
+ecdf_f <- cum_density_f/sum(density_f) 
+plot(sorted_vals_f, ecdf_f, type = "s", 
+     main = "Empirical CDF", xlab = "Age of female cancer patients", ylab = "Cumulative Probability")
+
+
+###### Plotting the normal cdf 
+#plotting normal cdf
+# Calculate normal CDF
+mu <- mean(sorted_vals_f)
+sigma <- sd(sorted_vals_f)
+normal_cdf <- pnorm(sorted_vals_f, mean = mu, sd = sigma)
+lines(sorted_vals_f, normal_cdf, col = "red")
+
+
+
+######Calculating Gamma CDF
+scale_f = (sigma^2)/mu
+shape_f = mu/scale_f
+gamma_cdf <- pgamma(sorted_vals_f, shape = shape_f , scale = scale_f)
+lines(sorted_vals_f, gamma_cdf, col = "green")
+legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
+       lty = 1, col = c("black", "red", "green"))
+
+########## Now we calculate the  empirical distribution function
+sorted_vals_m <- sort(m)
+#cumulative density
+cum_density_m <- cumsum(density_m)
+
+ecdf_m <- cum_density_m/sum(density_m) 
+plot(sorted_vals_m, ecdf_m, type = "s", 
+     main = "Empirical CDF", xlab = "Age of male cancer patients", ylab = "Cumulative Probability")
+
+
+###### Plotting the normal cdf 
+#plotting normal cdf
+# Calculate normal CDF
+mu_m <- mean(sorted_vals_m)
+sigma_m <- sd(sorted_vals_m)
+normal_cdf_m <- pnorm(sorted_vals_m, mean = mu_m, sd = sigma_m)
+lines(sorted_vals_m, normal_cdf_m, col = "red")
+
+
+
+######Calculating Gamma CDF
+scale_m = (sigma_m^2)/mu_m
+shape_m = mu_m/scale_m
+gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
+lines(sorted_vals_m, gamma_cdf_m, col = "green")
+legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
+       lty = 1, col = c("black", "red", "green"))
+```
+
+
 ## Conclusion
 
 [**Acknowledgements**]{.underline}**:** We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
 
-Fundamentals of Statistics (Volume One); A.M.Gun, M.K.Gupta, B.Dasgupta; The World Press Pvt. Ltd., 2019.
+## References
+
+-   Fundamentals of Statistics (Volume One); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., 2019.
