@@ -228,6 +228,26 @@ ggplot(average_sorted_gene_expression <- gene_names_df %>% mutate(Expression=app
   theme_minimal()
 ```
 
+[Boxplot of cases by gender]{.underline}:
+
+```{r}
+#| echo: false
+#| fig-cap: Cases by Gender
+#| warning: false
+#| fig-align: center
+#| fig-height: 2.55
+load("Cancer_Sites.Rdata")
+gender_labels <- c("0" = "Male", "1" = "Female", "2" = "Both")
+gender_colors <- c("0" = "blue", "1" = "red", "2" = "green")
+ggplot(dat, aes(x = factor(Gender), y = Cases, fill = factor(Gender))) +
+  geom_boxplot() + scale_x_discrete(labels = gender_labels) +
+  scale_fill_manual(values = gender_colors, labels = gender_labels) + 
+  labs(title = "Boxplot", x = "Gender", y = "Cases") +
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
 \newpage
 
 ## Visualizations
@@ -419,7 +439,7 @@ We have,
 
 -   $X_{ij}$ is the observation in the $i^{\text{th}}$ group and the $j^{\text{th}}$ gene expression level ($j=1,2,\ldots,20532$)
 
--   $\overline{X_n} \stackrel{asym}{\sim} \mathcal{N}(\mu,\,\tfrac{\sigma^{2}}{n})$ i.e.,$\dfrac{\sqrt{n}(\overline{X_n}-\mu)}{\sigma}\xrightarrow[]{d} \mathcal{N}(0,\,1) \text{ as } \boxed{n \rightarrow \infty}$ (by [Central Limit Theorem]{.underline}) where $\bar{X_n}$ is a random variable with mean $\mu$ and variance $\tfrac{\sigma^2}{n}$ that denotes mean gene expression for a particular gene.
+-   $\overline{X_n} \stackrel{asym}{\sim} \mathcal{N}(\mu,\,\tfrac{\sigma^{2}}{n})$ i.e.,$\dfrac{\sqrt{n}(\overline{X_n}-\mu)}{\sigma}\xrightarrow[]{d} \mathcal{N}(0,\,1) \text{ as } \boxed{n \rightarrow \infty}$ (by [Central Limit Theorem]{.underline}) where $\overline{X_n}$ is a random variable with mean $\mu$ and variance $\tfrac{\sigma^2}{n}$ that denotes mean gene expression for a particular gene.
 
 The null hypothesis ($\text{H}_0$) for each F-test is that there are no differences in mean gene expression levels among the different cancer types. $$\text{H}_0: \mu_1=\mu_2=\ldots=\mu_5$$ where: $\mu_{i}$ is the population mean of the $i^{\text{th}}$ group.
 
@@ -576,7 +596,7 @@ gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
 
 [Ans]{.underline}: Applying the Shapiro-Wilk's Test,
 
-For males:
+For **males**:
 
 ```{r}
 #| echo: false
@@ -585,7 +605,7 @@ shapiro.test(m)
 
 $\boxed{\text{We reject H}_0}$
 
-For females:
+For **females**:
 
 ```{r}
 #| echo: false
@@ -622,20 +642,20 @@ $\boxed{\text{We fail to reject H}_0}$
 
 2.  Does the ages of male and female cancer patients follow the Gamma distribution?
 
-[Ans]{.underline}: For males:
+[Ans]{.underline}: For **females**:
 
 ```{r}
 #| echo: false
-ks.test(f, "pgamma", shape_m, scale_m)
+ks.test(f, "pgamma", shape_f, scale_f)
 ```
 
 $\boxed{\text{We reject H}_0}$
 
-For females:
+For **males**:
 
 ```{r}
 #| echo: false
-ks.test(f, "pgamma", shape_m, scale_m)
+ks.test(m, "pgamma", shape_m, scale_m)
 ```
 
 $\boxed{\text{We reject H}_0}$
@@ -688,4 +708,4 @@ legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"),
 
 -   Fundamentals of Statistics (Volume One); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., 2019.
 
-- The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (Paperback) – 29 July, 2007
+-   The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (Paperback) -- 29 July, 2007
