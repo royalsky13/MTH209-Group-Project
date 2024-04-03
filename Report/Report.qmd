@@ -1,5 +1,6 @@
 ---
 title: "Genetic Correspondence and Comparative Spatial Analysis with Age and Gender Specification of ICMR Data on Cancer Incidence in India"
+toc: false
 author:
   - name: Sarbojit Das (231080075)
     affil-id: "*"
@@ -15,11 +16,9 @@ affiliations:
   - id: "*"
     name: Department of Mathematics & Statistics, Indian Institute of Technology Kanpur, India
 date: today
-toc: false
 date-format: long
 format: 
   pdf:
-    thanks: We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
     number-sections: true
     number-depth: 2
     keep-tex: true
@@ -46,11 +45,6 @@ header-includes:
    - \makeatother
 ---
 
-```{=latex}
-\vspace{11.5cm}
-\tableofcontents{}
-```
-
 ```{r}
 #| label: load-packages
 #| message: false
@@ -71,8 +65,6 @@ library(knitr)
 load("ICMR.Rdata")
 ```
 
-\newpage
-
 ```{=tex}
 \rule{\textwidth}{0.5 pt}
 \begin{abstract}
@@ -80,6 +72,12 @@ Cancer remains a significant global health challenge, characterized by immense s
 \end{abstract}
 \rule{\textwidth}{0.5 pt}
 ```
+```{=latex}
+\vspace{11.5cm}
+\tableofcontents{}
+```
+\newpage
+
 ## Introduction
 
 Cancer is a formidable adversary to human health. It persists as a significant global burden, causing immeasurable suffering and presenting substantial challenges to healthcare systems worldwide. Its insidious nature lies in the uncontrolled growth and dissemination of abnormal cells, disrupting the delicate balance of cellular regulation inherent in the human body's natural processes. Despite remarkable advancements in medical science, the complexities of cancer remain a formidable challenge, often accompanied by limited treatment options and devastating outcomes for affected individuals and their families.
@@ -293,7 +291,7 @@ f_t <- tail(F_Site_ord, 10)
 ggplot(f_t, aes(x = reorder(Site, Female), y = Female)) +
   geom_bar(stat = "identity", fill = "deepskyblue3") +
   geom_text(aes(label = F_Prop), color = "black", 
-            position = position_stack(vjust = 1), hjust = -0.20) +
+            position = position_stack(vjust = 1), hjust = -0.03) +
   labs(title = "Top Ten Cancer Sites",
        y = "Frequency", x = "Cancer Site") +
   theme(panel.background = element_blank(),
@@ -327,7 +325,7 @@ ggplot(f_t, aes(x = reorder(Site, Female), y = Female)) +
 ggplot(m_t, aes(x = reorder(Site, Male), y = Male)) +
   geom_bar(stat = "identity", fill = "cornflowerblue") +
   geom_text(aes(label = M_Prop), color = "black", 
-            position = position_stack(vjust = 1), hjust = -0.20) +
+            position = position_stack(vjust = 1), hjust = -0.03) +
   labs(title = "Top Ten Cancer Sites",
        y = "Frequency", x = "Cancer Site") +
   theme(panel.background = element_blank(),
@@ -349,7 +347,7 @@ ggplot(m_t, aes(x = reorder(Site, Male), y = Male)) +
 
 -   Clean and less polluted environments in hilly areas may contribute to lower cancer rates. Differences in lifestyle patterns, including dietary habits and physical activity levels, may also play a role in the observed regional disparities.
 
-![Year 2022](India_Map_Cancer_2022.png){fig-align="center" width="599" height="504"}
+![Cancer Incidence of India in the year 2022](India_Map_Cancer_2022.png){fig-align="center" width="599" height="504"}
 
 \newpage
 
@@ -368,14 +366,6 @@ We performed a comparative $10$ year gap analysis with the cancer incidences in 
 
 A comparative 10 year gap cancer incidence in India
 :::
-
-\newpage
-
-## Hierarchical clustering
-
-It is a simple but proven method for analyzing gene expression data by building clusters of genes with similar patterns of expression. This is done by iteratively grouping together genes that are highly correlated in their expression matrix. As a result, a dendrogram is generated.
-
-![](Heatmap.png){fig-align="center"}
 
 \newpage
 
@@ -429,7 +419,7 @@ We have,
 
 -   $X_{ij}$ is the observation in the $i^{\text{th}}$ group and the $j^{\text{th}}$ gene expression level ($j=1,2,\ldots,20532$)
 
--   $\bar{X_n} \stackrel{asym}{\sim} \mathcal{N}(\mu,\,\tfrac{\sigma^{2}}{n})$ i.e.,$\dfrac{\sqrt{n}(\bar{X_n}-\mu)}{\sigma}\xrightarrow[]{d} \mathcal{N}(0,\,1) \text{ as } \boxed{n \rightarrow \infty}$ (by [Central Limit Theorem]{.underline}) where $\bar{X_n}$ is a random variable with mean $\mu$ and variance $\tfrac{\sigma^2}{n}$ that denotes mean gene expression for a particular gene.
+-   $\overline{X_n} \stackrel{asym}{\sim} \mathcal{N}(\mu,\,\tfrac{\sigma^{2}}{n})$ i.e.,$\dfrac{\sqrt{n}(\overline{X_n}-\mu)}{\sigma}\xrightarrow[]{d} \mathcal{N}(0,\,1) \text{ as } \boxed{n \rightarrow \infty}$ (by [Central Limit Theorem]{.underline}) where $\bar{X_n}$ is a random variable with mean $\mu$ and variance $\tfrac{\sigma^2}{n}$ that denotes mean gene expression for a particular gene.
 
 The null hypothesis ($\text{H}_0$) for each F-test is that there are no differences in mean gene expression levels among the different cancer types. $$\text{H}_0: \mu_1=\mu_2=\ldots=\mu_5$$ where: $\mu_{i}$ is the population mean of the $i^{\text{th}}$ group.
 
@@ -532,90 +522,163 @@ for (gene in selected_genes) {
 \newpage
 
 ## Non-Parametric Tests
+
 ```{r}
-#| echo: false
-#| layout-ncol: 2
-##Generating a synthetic dataset for female cancer patients 
+#| include: false
 FRE_F <- c(13709, 94166, 425918, 215458)
 dfem <- rep(c(15,40, 65, 80), FRE_F)
-
 ### first decide the bandwidth
 bw1 = 4.89
 f <- density(dfem, bw = bw1)$x #female age values
 density_f <- density(dfem, bw = bw1)$y #corresponding densities
-plot(f, density_f, type = "l", xlab = "Age of Female Cancer Patients",
-     ylab = "density")
-
-FRE_M <- c(21308, 74872, 341230, 274766)
-dma <- rep(c(15,40, 65, 80), FRE_M)
 
 ### first decide the bandwidth
 bw2 = 4.89
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
 m <- density(dma, bw = bw2)$x #male age values
 density_m <- density(dma, bw = bw2)$y #corresponding densities
-plot(m, density_m, type = "l", xlab = "Age of male Cancer Patients",
-     ylab = "density")
 
-```
-```{r}
-#| layout-ncol: 2
-#| echo: false
 sorted_vals_f <- sort(f)
-#cumulative density
 cum_density_f <- cumsum(density_f)
-
 ecdf_f <- cum_density_f/sum(density_f) 
-plot(sorted_vals_f, ecdf_f, type = "s", 
-     main = "Empirical CDF", xlab = "Age of female cancer patients", ylab = "Cumulative Probability")
-
-
-###### Plotting the normal cdf 
-#plotting normal cdf
-# Calculate normal CDF
 mu <- mean(sorted_vals_f)
 sigma <- sd(sorted_vals_f)
 normal_cdf <- pnorm(sorted_vals_f, mean = mu, sd = sigma)
-lines(sorted_vals_f, normal_cdf, col = "red")
-
-
-
-######Calculating Gamma CDF
 scale_f = (sigma^2)/mu
 shape_f = mu/scale_f
 gamma_cdf <- pgamma(sorted_vals_f, shape = shape_f , scale = scale_f)
-lines(sorted_vals_f, gamma_cdf, col = "green")
-legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
-       lty = 1, col = c("black", "red", "green"))
-
-########## Now we calculate the  empirical distribution function
 sorted_vals_m <- sort(m)
-#cumulative density
 cum_density_m <- cumsum(density_m)
-
 ecdf_m <- cum_density_m/sum(density_m) 
-plot(sorted_vals_m, ecdf_m, type = "s", 
-     main = "Empirical CDF", xlab = "Age of male cancer patients", ylab = "Cumulative Probability")
-
-
-###### Plotting the normal cdf 
-#plotting normal cdf
-# Calculate normal CDF
 mu_m <- mean(sorted_vals_m)
 sigma_m <- sd(sorted_vals_m)
 normal_cdf_m <- pnorm(sorted_vals_m, mean = mu_m, sd = sigma_m)
-lines(sorted_vals_m, normal_cdf_m, col = "red")
-
-
-
-######Calculating Gamma CDF
 scale_m = (sigma_m^2)/mu_m
 shape_m = mu_m/scale_m
 gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
+
+```
+
+### Shapiro-Wilk Test
+
+-   We have performed this test to assess whether the datasets for male and female cancer patients come from a normal distribution. This is done using the `shapiro.test()` function in `R`.
+
+-   [Null Hypothesis]{.underline} ($\text{H}_0$): The data are normally distributed.
+
+-   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The data are not normally distributed.
+
+-   [Rejection Criteria]{.underline}: If the p-value is less than or equal to the chosen significance level ($\alpha$), typically $0.05$ then $\text{H}_0$ is rejected. This implies that there is sufficient evidence to conclude that the data do not come from a normally distributed population. Else, there is not enough evidence to conclude that the data do not come from a normally distributed population and further data analysis is required.
+
+-   This test is more powerful in detecting departures from normality over other normality tests, especially for [small to moderate sample sizes]{.underline}.
+
+[Question]{.underline}: Do our samples come from a normal population?
+
+[Ans]{.underline}: Applying the Shapiro-Wilk's Test,
+
+For males:
+
+```{r}
+#| echo: false
+shapiro.test(m)
+```
+
+$\boxed{\text{We reject H}_0}$
+
+For females:
+
+```{r}
+#| echo: false
+shapiro.test(f)
+```
+
+$\boxed{\text{We reject H}_0}$
+
+\newpage
+
+### Kolmogorov-Smirnov Test
+
+-   We have performed the K-S test to compare to see if both the datasets come from the same distribution. This is done using the `ks.test()` function in "`R`".
+
+-   [Null Hypothesis]{.underline} ($\text{H}_0$): The two datasets are drawn from the same continuous distribution.
+
+-   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The two datasets are not drawn from the same continuous distribution.
+
+-   [Rejection Criteria]{.underline}: If the p-value is less than or equal to the chosen significance level ($\alpha$), typically $0.05$ then $\text{H}_0$ is rejected. This implies that there is sufficient evidence to conclude that the two datasets are not drawn from the same continuous distribution. Else, there is not enough evidence and further data analysis is required.
+
+[Questions:]{.underline}
+
+1.  Do both the samples come from the same distribution?
+
+[Ans]{.underline}: Applying K-S Test,
+
+```{r}
+#| echo: false
+#| warning: false
+ks.test(f, m)
+```
+
+$\boxed{\text{We fail to reject H}_0}$
+
+2.  Does the ages of male and female cancer patients follow the Gamma distribution?
+
+[Ans]{.underline}: For males:
+
+```{r}
+#| echo: false
+ks.test(f, "pgamma", shape_m, scale_m)
+```
+
+$\boxed{\text{We reject H}_0}$
+
+For females:
+
+```{r}
+#| echo: false
+ks.test(f, "pgamma", shape_m, scale_m)
+```
+
+$\boxed{\text{We reject H}_0}$
+
+\newpage
+
+We have estimated the probability density function of both the datasets using kernel density estimation with a specified bandwidth $4.89$ and plotted below.
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-height: 5
+plot(f, density_f, type = "l", xlab = "Age of female cancer patients",
+     ylab = "density")
+plot(m, density_m, type = "l", xlab = "Age of male cancer patients",
+     ylab = "density")
+```
+
+We have calculated and plotted the empirical cumulative distribution function (ECDFs) for both the datasets. The theoretical cumulative distribution functions (CDFs) for normal and gamma distributions which are fitted to our datasets are also plotted alongside for visual comparision.
+
+```{r}
+#| layout-ncol: 2
+#| echo: false
+#| fig-height: 6
+plot(sorted_vals_f, ecdf_f, type = "s", 
+     main = "Empirical CDF", xlab = "Age of female cancer patients", ylab = "Cumulative Probability")
+lines(sorted_vals_f, normal_cdf, col = "red")
+
+lines(sorted_vals_f, gamma_cdf, col = "green")
+legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
+       lty = 1, col = c("black", "red", "green"))
+########## Now we calculate the  empirical distribution function
+plot(sorted_vals_m, ecdf_m, type = "s", 
+     main = "Empirical CDF", xlab = "Age of male cancer patients", ylab = "Cumulative Probability")
+###### Plotting the normal cdf 
+lines(sorted_vals_m, normal_cdf_m, col = "red")
+######Calculating Gamma CDF
 lines(sorted_vals_m, gamma_cdf_m, col = "green")
-legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
+legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
        lty = 1, col = c("black", "red", "green"))
 ```
 
+\newpage
 
 ## Conclusion
 
@@ -624,3 +687,5 @@ legend("bottomright", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"),
 ## References
 
 -   Fundamentals of Statistics (Volume One); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., 2019.
+
+- The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (Paperback) – 29 July, 2007
