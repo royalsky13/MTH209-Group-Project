@@ -543,13 +543,13 @@ for (gene in selected_genes) {
 
 ## Multinomial Logistic Regression
 
-Fitting Multinomial Logistic Regression for predicting the probability of the occurance of different types of cancer for an individual.
+Fitting Logistic Regression for predicting the probability of the occurance of different types of cancer for an individual.
 
 Cancer types according to different sites also bear very much importance. When it comes to the interest of the study, one of the most common question may arise that what is genetic effect on those cancer types. So, here we have 5 types of Cancer, namely, BRCA, COAD, KIRC, LUAD, PRAD. Now by Principle Component Analysis we have seen that the first 500 genes captures the maximum variation. Now we can check whether these genes have any significant effects on these cancer types.
 
 So, Here we consider the Cancer Types as different labels and corresponding gene expression values with corresponding genes. Now we are interested in fitting a Multinomial Logistic Regression Model. let us consider the following table as defining the probabilities of occurrence with respect to the corresponding cancer types.
 
-
+```{=tex}
 \begin{table}[ht]
 \centering
 \caption{Cancer Types with Corresponding Probabilities for jth individual}
@@ -563,7 +563,7 @@ Probability & $\pi_{1j}$ & $\pi_{2j}$ & $\pi_{3j}$ & $\pi_{4j}$ & $\pi_{5j}$ & 1
 \hline
 \end{tabular}
 \end{table}
-
+```
 Now, by this we can observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\sum_{i=1}^{4}\pi_{ij}$, considering 5th category as Pivotal Category. Therefore it is enough to estimate $\pi_i$ ; $i=1,2,3,4$ and we can automatically get the estimated value of $\pi_5$ and that will also reduce our manual labor.
 
 \underline{\textbf{Model :}} Let $Y_j$ be the random variable of the occurrence of a type of cancer of jth person, \begin{equation*}
@@ -588,10 +588,11 @@ Now, by this we can observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-
 
 Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
 
-Now by Maximum Likelihood Estimation we try to maximize the likelihood function, $L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=k)} \right]$ in order to fit the model. We can maximize it by various numerical ways.
+Now by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
 
 Let us consider only gene 1 first.
 
+```{=tex}
 \begin{table}[ht]
 \centering
 \caption{Estimates and p-values of the regression coefficients}
@@ -599,86 +600,59 @@ Let us consider only gene 1 first.
 \hline
  Coefficients & Estimate & Std. Error & z value & Pr(>|z|) \\
 \hline
-(Intercept):1 &  2.345370 &  0.343819 &  6.822 & 9.01e-12 \\
+(Intercept):1 &  2.345370 &  0.343819 &  6.822 & $9.01\times 10^{-12}$ \\
 (Intercept):2 & -0.547328 &  0.494891 & -1.106  &  0.269 \\
-(Intercept):3 & 2.398823  & 0.365845  & 6.557 & 5.49e-11 \\
+(Intercept):3 & 2.398823  & 0.365845  & 6.557 & $5.49\times10^{-11}$ \\
 (Intercept):4 & 0.296070  & 0.411232  & 0.720 & 0.472\\
-$gene_1:1$ & -0.492740  & 0.099693 & -4.943 & 7.71e-07 \\
+$gene_1:1$ & -0.492740  & 0.099693 & -4.943 & $7.71\times 10^{-07}$ \\
 $gene_1:2$ & -0.002505 &  0.137841 & -0.018  &  0.985 \\
-$gene_1:3$ & -0.787602 & 0.112672 & -6.990 & 2.75e-12 \\
+$gene_1:3$ & -0.787602 & 0.112672 & -6.990 & $2.75\times 10^{-12}$ \\
 $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \hline
 \end{tabular}
 \end{table}
-
-Now, let us fit the model and obtain the predicted probabilities of different types of cancer
-
-```{r, warning=FALSE, echo = FALSE, message=FALSE}
-
-library(dplyr)
-
-data <- as_tibble(read.csv("C:/Users/Swapnonil/Downloads/data.csv/data.csv"))
-label <- as_tibble(read.csv("C:/Users/Swapnonil/Downloads/labels.csv"))
-
-# head(data)
-# head(label)
-
-data_label <- merge(data, label)
-
-#head(data_label)
-#data_label$Class
-
-library(VGAM) 
-
-data_label$Class <- as.factor(data_label$Class)
-
-fit <- vglm(Class ~ gene_1, 
-            data = data_label, 
-            family = multinomial)
-#summary(fit)
-
-new_data <- data.frame(gene_1 = c(3.4678533, 2.9411814))
-
-predict(fit, new_data, type = "response")
 ```
 
+Here by the p-values, we can see that gene 1 has significant effects in causing BRCA and KIRC, at level 0.05.
+
+Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
+
+Let us consider two individuals with gene expression values of gene 1, 3.4678533 and 2.9411814. Then the fitted probabilites are as follows
+
+```{=tex}
+\begin{table}[ht]
+\centering
+\caption{Fitted Probabilities of the Specified Two Individiual}
+\begin{tabular}{c|ccccc}
+\hline
+Individual & BRCA & COAD & KIRC & LUAD & PRAD\\
+\hline
+1 & 0.3626322 & 0.11002989 & 0.1375935 & 0.1978839 & 0.1918605\\
+2 & 0.3962039 & 0.09286059 & 0.1755878 & 0.1736390 & 0.1617087\\
+\hline
+\end{tabular}
+\end{table}
+```
 From this we can see that for the first individual, according to the gene expression value of gene 1, there is greater probability of occurring BRCA. For the second person, the scenario is more or less same.
 
 Again let us check it for gene 1 and 2 combinely,
 
-```{r, warning=FALSE, echo = FALSE,message=FALSE}
-library(dplyr)
-
-data <- as_tibble(read.csv("C:/Users/Swapnonil/Downloads/data.csv/data.csv"))
-label <- as_tibble(read.csv("C:/Users/Swapnonil/Downloads/labels.csv"))
-
-# head(data)
-# head(label)
-
-data_label <- merge(data, label)
-
-#head(data_label)
-#data_label$Class
-
-library(VGAM) 
-
-data_label$Class <- as.factor(data_label$Class)
-
-fit <- vglm(Class ~ gene_1 + gene_2, 
-            data = data_label, 
-            family = multinomial)
-#summary(fit)
-```
-
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
-```{r, warning=FALSE, echo = FALSE, message=FALSE}
-new_data <- data.frame(gene_1 = c(3.4678533, 2.9411814),
-                       gene_2 = c(3.5819176, 2.6632763))
-
-predict(fit, new_data, type = "response")
+```{=tex}
+\begin{table}[ht]
+\centering
+\caption{Fitted Probabilities of the Specified Two Individiual}
+\begin{tabular}{c|ccccc}
+\hline
+Individual & BRCA & COAD & KIRC & LUAD & PRAD\\
+\hline
+1 & 0.3461035 & 0.1183316 & 0.1068651 & 0.2312489 & 0.19745091\\
+2 & 0.4627836 & 0.1008106 & 0.2074741 & 0.1551230 & 0.07380868\\
+\hline
+\end{tabular}
+\end{table}
 ```
-
 From this we can see that for the first individual, according to the gene expression value of gene 1, there is greater probability of occurring BRCA. For the second person, the scenario is more or less same.
 
 
