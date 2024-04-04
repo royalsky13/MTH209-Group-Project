@@ -845,6 +845,51 @@ legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"),
 
 [**Acknowledgements**]{.underline}**:** We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
 
+## Appendix
+
+### Kolmogorov-Smirnov Test (Single Sample)
+
+\textbf{Model :} $X_1, X_2,...,X_n\overset{iid}{\sim}F(x)$\\
+\textbf{Assumption :} Here we assume the F is absolutely continuous distribution function.\\
+\textbf{Hypothesis :} Here we are interested in testing whether the random sample come from a known distribution with distribution function $F_0(x)$ (say). That is,\\[-10pt]
+$$H_0 : F=F_0 \text{ against } H_a : F\neq F_0$$\\[-15pt]
+where $F=F_0\equiv F(x)=F_0(x)$ $\forall$ $x$\\
+and $F=F_0\equiv F(x)\neq F_0(x) \text{ with strict inequality for atleast one } x$\\
+Here we are mainly interested in checking Normality. So, $F_0(x)=\Phi(x)$\\
+So, the hypothesis becomes,\\[-10pt]
+$$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$\\[-15pt]
+where $\Phi$ is the cumulative distribution function of standard normal distribution.\\
+\textbf{Test Statistic :} For testing $H_0$ against $H_a$ we define the following statistic,\\
+$$D_n = \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right|$$\\[-10pt]
+Notice that $\widehat{F_n(x)}$ approximate the true distribution function $\Phi$ . $\widehat{F_n(x)}$ by definition is a step function i.e. the absolute difference measured by $D_n$ provide us the departure of the true situation from the null hypothesis towards the corresponding alternative.\\
+The distribution of the test statistics is free from the population distribution.\\
+\textbf{Distribution Free :}\\
+\textcolor{violet}{Exact Distribution Free (EDF) of $D_n$ :} Here we use the ordered statistics,\\[-10pt]
+$$X_{(1)}, X_{(2)}, ... , X_{(n)}, \text{ Further we denote } X_{(0)}=-\infty \text{ and } X_{(n+1)}=\infty$$\\[-22.5pt]
+\begin{align*}
+    D_n &= \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right| \\
+    &= \max_{i=0,1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\\
+    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\right\}\\
+    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\frac{i}{n}-\Phi(x)\right|\right\}\right\} \hspace{30pt} \left[\becauses \widehat{F_n(x)}=\frac{i}{n}\right]\\
+    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\left|\frac{i}{n}-\Phi(x_{(i)})\right|\right\}\right\}\\
+\end{align*}\\[-21pt]
+Notice that,\\[-15pt]
+$$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\[-23.5pt]
+{\scriptsize{$$\hspace{20mm}H_0$$}}\\[-20.5pt]
+$$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\[-23.5pt]
+{\scriptsize{$$\hspace{16.5mm}H_0$$}}\\[-20.5pt]
+Since $\Phi$ is absolutely continuous, we can conclude that,\\[-8pt]
+$$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\[-24pt]
+{\scriptsize{$$\hspace{22mm}H_0$$}}\\[-13pt]
+That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, 
+U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\
+\textbf{Test :} Notice that $D_n$ depends on the empirical distribution function $\widehat{F_n(x)}$ which represents the true distribution function. Thus the directional difference measured by $D_n$ actually indicate the departure of the true situation form the null hypothesis towards the alternative $H_a$ i.e. under $H_a : F\neq F_0$ becomes larger than that under $H_0$. On the other hand a small value of $D_n$ indicates the acceptance of $H_0$. Thus a right tail test based on $D_n$ will be appropriate for testing  $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$.\\
+We reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-10pt]
+$$D_n > d_\alpha$$\\[-15pt]
+In terms of p-value we can say, we reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-8pt]
+$$p-value=P_{H_{0}}\left(D_n\ge observed(D_n)\right)\le \alpha$$\\
+
+
 ## References
 
 -   Fundamentals of Statistics (Volume One); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., 2019.
