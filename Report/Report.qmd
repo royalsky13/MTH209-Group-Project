@@ -270,7 +270,7 @@ hist(dfe, breaks = c(0,15,40,65,80), add=T,
       col=rgb(1, 0, 0, alpha=0.5))
 legend("topleft", legend=c("Male", "Female"), fill=c(rgb(0, 0, 1, alpha=0.5), rgb(1, 0, 0, alpha=0.5)))
 
-plot(density(dma, bw = 8),type="l", xlim = c(0,100), ylim = c(0.00105, 0.035),
+plot(density(dma, bw = 8),type="l", xlim = c(3.8,100), ylim = c(0.00105, 0.035),
       main = "Cancer Incidence Density",col="blue",
       xlab = "Age")
 lines(density(dfe, bw = 8), xlim = c(3.8,100),col="red",lty=2)
