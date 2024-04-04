@@ -19,7 +19,12 @@ library(VGAM)
 
 data_label$Class <- as.factor(data_label$Class)
 
-fit <- vglm(Class ~ gene_1, 
+fit <- vglm(Class ~ gene_1 + gene_2, 
             data = data_label, 
             family = multinomial)
 summary(fit)
+
+new_data <- data.frame(gene_1 = c(3.4678533, 2.9411814, 5.3177020),
+                       gene_2 = c(3.5819176, 2.6632763, 1.6426785))
+
+predict(fit, new_data, type = "response")
