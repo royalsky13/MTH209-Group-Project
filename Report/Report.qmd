@@ -639,6 +639,8 @@ Again let us check it for gene 1 and 2 combinely,
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
+Let us consider two individuals with gene expression values of gene 1 and gene 2 are as follows, 3.4678533, 2.9411814 and 2.9411814, 2.6632763. Then the fitted probabilites are as follows,
+
 ```{=tex}
 \begin{table}[ht]
 \centering
