@@ -1,6 +1,5 @@
 ---
 title: "Genetic Correspondence and Comparative Spatial Analysis with Age and Gender Specification of ICMR Data on Cancer Incidence in India"
-toc: false
 author:
   - name: Sarbojit Das (231080075)
     affil-id: "*"
@@ -72,12 +71,6 @@ Cancer remains a significant global health challenge, characterized by immense s
 \end{abstract}
 \rule{\textwidth}{0.5 pt}
 ```
-```{=latex}
-\vspace{11.5cm}
-\tableofcontents{}
-```
-\newpage
-
 ## Introduction
 
 Cancer is a formidable adversary to human health. It persists as a significant global burden, causing immeasurable suffering and presenting substantial challenges to healthcare systems worldwide. Its insidious nature lies in the uncontrolled growth and dissemination of abnormal cells, disrupting the delicate balance of cellular regulation inherent in the human body's natural processes. Despite remarkable advancements in medical science, the complexities of cancer remain a formidable challenge, often accompanied by limited treatment options and devastating outcomes for affected individuals and their families.
@@ -156,7 +149,7 @@ We conducted data pre-processing and cleaning tasks on two datasets: "`data.csv`
     kable(summary(df[c(4,5)]))
     ```
 
-The processed dataframe contains both label information and genetic data. It is saved in the "`.Rdata`" format for further analysis and modelling.
+The processed dataframe contains both label information and genetic data. It is saved in the [ICMR.Rdata](https://drive.google.com/file/d/1deE-VbSUCll47XgUvrMothUlDm-s8Q_S/view?usp=drive_link) file for further analysis and modelling.
 
 \newpage
 
@@ -254,20 +247,38 @@ ggplot(dat, aes(x = factor(Gender), y = Cases, fill = factor(Gender))) +
 
 ### Age specific gender-wise cancer incidences
 
-The shapes of the density curves represents the leptokurtic curve for females and mesokurtic curve for males.
+-   The density curve for females exhibits a [leptokurtic]{.underline} shape, indicating a higher concentration of data points around the mean and heavier tails compared to a normal distribution. In contrast, the density curve for males demonstrates a [mesokurtic]{.underline} shape, suggesting a distribution with moderate kurtosis and a balanced spread of data around the mean.
+
+-   Our examination of the age-wise distribution of cancer patients across genders revealed a common trend characterized by a [negative skewness]{.underline}. This observation implies a tendency towards a longer tail on the left side of the distribution, indicating a higher frequency of cancer occurrences in older age groups compared to younger age groups, irrespective of gender.
 
 ```{r}
 #| echo: false
+#| fig-height: 5
+#| warning: false
+#| layout-ncol: 2
 FRE_M <- c(21308, 74872, 341230, 274766)
-dma <- rep(c(15, 40, 65, 80), FRE_M)
-plot(density(dma, bw = 8), xlim = c(3.8, 100), ylim = c(0.00105, 0.035),
-     main = "Age-wise Cancer Incidence Density",
-     xlab = "Age", ylab = "Density", col = "blue")
+dma <- rep(c(15,40,65,80), FRE_M)
+hist(dma, breaks = c(0,15,40,65,80), xlim = c(0,100), 
+     ylim = c(0.00105, 0.035),
+     main = "Cancer Incidence Histogram",
+     xlab = "Age", col=rgb(0, 0, 1, alpha=0.5))
 
 FRE_F <- c(13709, 94166, 425918, 215458)
-dfe <- rep(c(15, 40, 65, 80), FRE_F)
-lines(density(dfe, bw = 8), col = "red",lty=2)
+dfe <- rep(c(15,40,65,80), FRE_F)
+
+hist(dfe, breaks = c(0,15,40,65,80), add=T, 
+      col=rgb(1, 0, 0, alpha=0.5))
+legend("topleft", legend=c("Male", "Female"), fill=c(rgb(0, 0, 1, alpha=0.5), rgb(1, 0, 0, alpha=0.5)))
+
+plot(density(dma, bw = 8),type="l", xlim = c(0,100), ylim = c(0.00105, 0.035),
+      main = "Cancer Incidence Density",col="blue",
+      xlab = "Age")
+lines(density(dfe, bw = 8), xlim = c(3.8,100),col="red",lty=2)
 legend("topleft", legend = c("Male", "Female"), col = c("blue", "red"), lty = c(1,2))
+
+
+
+
 ```
 
 ### Gender-wise top ten cancer sites
@@ -379,13 +390,7 @@ We performed a comparative $10$ year gap analysis with the cancer incidences in 
 
 -   In a quick snapshot, there is a massive increment in the total number of cancer patients nationwide from approximately $160,000$ in $2011$ to around $200,000$ in $2021$. This substantial increase underscores the importance of heightened attention from both the public and government sectors towards cancer eradication efforts and mass awareness campaigns.
 
-::: {#fig-1 layout-ncol="2"}
-![Year 2011](India_Map_Cancer_2011.png){#fig-a width="393"}
-
-![Year 2021](India_Map_Cancer_2021.png){#fig-b width="395"}
-
-A comparative 10 year gap cancer incidence in India
-:::
+![A comparative 10 Year Gap Cancer Incidence in India](India_Map_2011_2021.png){width="7.45in"}
 
 \newpage
 
@@ -403,22 +408,36 @@ Each sample has expression values for around $20$K genes. However, it may not be
 
 -   Although some genes overlap between the clusters, the plot does not show any clear separation between all cancer types.
 
+\newpage
+
 [Cumulative Explained Variance Plot]{.underline}:
 
 ![](download2.png){fig-align="center" width="448"}
+
+-   The plot typically shows the cumulative proportion of variance explained on the y-axis and the number of principal components on the x-axis. As more principal components are added, the cumulative proportion of variance increases. The plot helps in identifying the point at which adding more principal components does not significantly increase the explained variance, which can be a guide for determining the appropriate number of principal components to retain.
 
 -   This plot shows the cumulative sum of the explained variances for the components. The '*elbow*' or point where the curve starts to level off is often used to decide how many components one wants to keep.
 
 -   From this curve, we see that it starts to flatten around $150$ - $200$ PCs, suggesting a potential elbow point in this range.
 
-Now, we try PCA with $600$ and $400$ components which gives $96.54\%$ and $90.81\%$ of variance explained respectively.
+\newpage
 
-::: {#fig-2 layout-ncol="2"}
-![600 Components](download3.png){#fig-c}
+[Remarks]{.underline}:
 
-![400 Components](download4.png){#fig-d}
+-   Class KIRC is notably more separable than other classes, indicating effective feature differentiation.
 
-PCA with different components
+-   PC$1$ and PC$2$ hold valuable information for distinguishing KIRC from other cancer types.
+
+-   Class PRAD exhibits enhanced separability, emphasizing the significance of PC$2$ and PC$3$.
+
+-   PC$2$ and PC$3$ capture distinctive features for characterizing PRAD, making it more distinguishable.
+
+::: {#fig-2 layout-nrow="2"}
+![PC1 vs PC3](pca1vs3.png){#fig-c fig-align="center" width="3.84in"}
+
+![PC3 vs PC4](pca3vs4.png){#fig-d fig-align="center" width="3.84in"}
+
+Scatter Plot of Data Distribution Based on Principal Components
 :::
 
 \newpage
@@ -498,19 +517,30 @@ kable(tail(variances_sorted, 3), caption = "Bottom 3 high variance genes", row.n
 
 In a one-vs-all t-test scenario, we compare the means of one cancer group (the "*one*" group) against the means of all other groups excluding that cancer group (the "*all*" group). It's commonly used in situations where one wants to compare a specific group against the rest of the data.
 
+|                       |                                                                                                                                                                                               |
+|--------------------|----------------------------------------------------|
+| **Independence**      | Gene expressions within the "*one*" group and "*all*" group are independent of each other.                                                                                                    |
+| **Normality**         | Each group's data follow approximately the normal distribution (by [Central Limit Theorem]{.underline}).                                                                                      |
+| **Random Sampling**   | The collective gene expressions data are obtained through a random sampling process from the population of cancer patients. This ensures that the sample is representative of the population. |
+| **Unequal Variances** | The compared variances of the two groups are unequal.                                                                                                                                         |
+
+: Assumptions
+
 -   [Null Hypothesis]{.underline} ($\text{H}_0$): The null hypothesis assumes that there is no difference between the means of the "*one*" group and the means of the "*all*" group. $$\text{H}_0:\mu_\text{one}=\mu_\text{all}$$
 
 -   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The alternative hypothesis states that the means of the "*one*" group and the "*all*" group are different. $$\text{H}_1:\mu_\text{one}\neq\mu_\text{all}$$
 
--   [Test Statistic]{.underline}: $t = \dfrac{\bar{x_1}-\bar{x_2}}{\sqrt{\dfrac{s_1^2}{n_1}+ \dfrac{s_2^2}{n_2} } }$ where:
+-   [Test Statistic]{.underline}: $t_\text{cal} \stackrel{\text{H}_0}{=} \dfrac{\bar{x_1}-\bar{x_2}}{\sqrt{\dfrac{s_1^2}{n_1}+ \dfrac{s_2^2}{n_2} } }$ where:
 
     -   $\bar{x_1}$ and $\bar{x_2}$ are the means of the "*one*" group and the "*all*" group respectively.
     -   $s_1$ and $s_2$ are the standard deviations of the "*one*" group and the "*all*" group respectively.
     -   $n_1$ and $n_2$ are the sample sizes of the "*one*" group and the "*all*" group respectively.
 
--   [Rejection Criteria]{.underline}: If the p-value is smaller than a predetermined significance level (commonly $0.05$), we reject the null hypothesis.
+-   [Rejection Criteria]{.underline}: If the p-value is smaller than a predetermined significance level (commonly $0.05$), we reject the null hypothesis. Else, we fail to reject $\text{H}_0$ and further data analysis is required.
 
--   [Results]{.underline}: We perform this test for the top $3$ high variance genes.
+    \newpage
+
+-   [Results]{.underline}: We performed this test for the top $3$ high variance genes.
 
 ```{r}
 #| echo: false
@@ -543,16 +573,16 @@ for (gene in selected_genes) {
 
 ## Multinomial Logistic Regression
 
-Fitting Logistic Regression for predicting the probability of the occurance of different types of cancer for an individual.
+We want to fit Logistic Regression for predicting the probability of the occurrence of $5$ different types of cancer for an individual.
 
-Cancer types according to different sites also bear very much importance. When it comes to the interest of the study, one of the most common question may arise that what is genetic effect on those cancer types. So, here we have 5 types of Cancer, namely, BRCA, COAD, KIRC, LUAD, PRAD. Now by Principle Component Analysis we have seen that the first 500 genes captures the maximum variation. Now we can check whether these genes have any significant effects on these cancer types.
+Cancer types across different sites are of penultimate importance, particularly in studying the genetic effects on these cancer types. One common question that arises is the extent to which genetics influences these cancers. Our dataset primarily focuses on $5$ types of cancer: BRCA, COAD, KIRC, LUAD and PRAD. Through Principle Component Analysis (PCA), we have determined that the first $500$ genes capture the maximum variation. Now, we aim to investigate whether these genes exhibit any significant effects on these cancer types.
 
-So, Here we consider the Cancer Types as different labels and corresponding gene expression values with corresponding genes. Now we are interested in fitting a Multinomial Logistic Regression Model. let us consider the following table as defining the probabilities of occurrence with respect to the corresponding cancer types.
+So, here we consider the different types of cancer as distinct labels, each associated with corresponding gene expression values. Our interest lies in fitting a Multinomial Logistic Regression Model. Let us examine the following table, which defines the probabilities of occurrence for each cancer type.
 
 ```{=tex}
 \begin{table}[ht]
 \centering
-\caption{Cancer Types with Corresponding Probabilities for jth individual}
+\caption{Cancer Types with Corresponding Probabilities for $j^\text{th}$ individual}
 \begin{tabular}{|c|ccccc|c|}
 \hline
 Sl. No. & 1 & 2 & 3 & 4 & 5 & \\
@@ -564,9 +594,9 @@ Probability & $\pi_{1j}$ & $\pi_{2j}$ & $\pi_{3j}$ & $\pi_{4j}$ & $\pi_{5j}$ & 1
 \end{tabular}
 \end{table}
 ```
-Now, by this we can observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\sum_{i=1}^{4}\pi_{ij}$, considering 5th category as Pivotal Category. Therefore it is enough to estimate $\pi_i$ ; $i=1,2,3,4$ and we can automatically get the estimated value of $\pi_5$ and that will also reduce our manual labor.
+Now, from this we observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\sum_{i=1}^{4}\pi_{ij}$, considering $5^\text{th}$ category as the Pivotal Category. Thus, it is good enough to estimate $\pi_i$ ; $i=1,2,3,4$ and we can automatically get back the estimated value of $\pi_5$ which in turn will also reduce our manual labour.
 
-\underline{\textbf{Model :}} Let $Y_j$ be the random variable of the occurrence of a type of cancer of jth person, \begin{equation*}
+\underline{\textbf{Model:}} Let $Y_j$ be the random variable of the occurrence of a type of cancer of $j^{\text{th}}$ person, \begin{equation*}
     Y_j =
     \begin{cases}
         1 & \text{if BRCA occurred}\\
@@ -588,9 +618,9 @@ Now, by this we can observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-
 
 Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
 
-Now by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
+Now, by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
 
-Let us consider only gene 1 first.
+Let us consider only Gene -$1$ first.
 
 ```{=tex}
 \begin{table}[ht]
@@ -612,17 +642,16 @@ $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \end{tabular}
 \end{table}
 ```
-
-Here by the p-values, we can see that gene 1 has significant effects in causing BRCA and KIRC, at level 0.05.
+Here from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$.
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
-Let us consider two individuals with gene expression values of gene 1, 3.4678533 and 2.9411814. Then the fitted probabilites are as follows
+Let us consider two individuals with gene expression values of Gene -$1$ as $3.4678533$ and $2.9411814$. Then the fitted probabilites are as follows:
 
 ```{=tex}
 \begin{table}[ht]
 \centering
-\caption{Fitted Probabilities of the Specified Two Individiual}
+\caption{Fitted Probabilities of the Specified Two Individiuals}
 \begin{tabular}{c|ccccc}
 \hline
 Individual & BRCA & COAD & KIRC & LUAD & PRAD\\
@@ -633,13 +662,13 @@ Individual & BRCA & COAD & KIRC & LUAD & PRAD\\
 \end{tabular}
 \end{table}
 ```
-From this we can see that for the first individual, according to the gene expression value of gene 1, there is greater probability of occurring BRCA. For the second person, the scenario is more or less same.
+From this, we can see that for the first individual, according to the gene expression value of Gene -$1$, there is greater probability of occurring BRCA. For the second person, the scenario is more or less the same.
 
-Again let us check it for gene 1 and 2 combinely,
+Again, let us check it for Gene -$1$ and Gene -$2$ collectively.
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
-Let us consider two individuals with gene expression values of gene 1 and gene 2 are as follows, 3.4678533, 2.9411814 and 2.9411814, 2.6632763. Then the fitted probabilites are as follows,
+Let us consider two individuals with gene expression values of Gene -$1$ and Gene -$2$ as follows: $3.4678533$, $2.9411814$ and $2.9411814$, $2.6632763$ respectively. Then the fitted probabilites are:
 
 ```{=tex}
 \begin{table}[ht]
@@ -655,8 +684,9 @@ Individual & BRCA & COAD & KIRC & LUAD & PRAD\\
 \end{tabular}
 \end{table}
 ```
-From this we can see that for the first individual, according to the gene expression value of gene 1, there is greater probability of occurring BRCA. For the second person, the scenario is more or less same.
+From this, we can see that for the first individual, according to the gene expression value of Gene -$1$, there is greater probability of occurring BRCA. For the second person, the scenario is more or less the same.
 
+\newpage
 
 ## Non-Parametric Tests
 
@@ -735,7 +765,7 @@ $\boxed{\text{We reject H}_0}$
 
 ### Kolmogorov-Smirnov Test
 
--   We have performed the K-S test to compare to see if both the datasets come from the same distribution. This is done using the `ks.test()` function in "`R`".
+-   We have performed the K-S test to compare to see if both the datasets come from the same distribution. This is done using the `ks.test()` function in `R`.
 
 -   [Null Hypothesis]{.underline} ($\text{H}_0$): The two datasets are drawn from the same continuous distribution.
 
@@ -819,55 +849,22 @@ legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"),
 
 ## Conclusion
 
-[**Acknowledgements**]{.underline}**:** We express our sincere gratitude to Prof. Subhajit Dutta for his supervision and continuous support to complete this project.
+In brief, our analysis of cancer incidence in India reveals significant findings. Uttar Pradesh emerged as a high-risk region and the noticeable increase in cancer cases across India in recent times needs further investigation and intervention. Interestingly, our examination of the male-female age-wise distribution of cancer patients indicated a similarity with a negative skewness, suggesting a common trend in cancer occurrence across genders and age groups. Through exploratory data analysis (EDA), we gained insights into the structure and content of the datasets, ensuring data quality through categorical variable conversion, data merging and data quality checks.
 
-## Appendix
+Furthermore, our exploration of different cancer types demonstrated non-uniform distribution, with varying percentages of occurrence across the different types. We observed that Breast Cancer (BRCA) contained the most data points, almost $38\%$ of the entire dataset.
 
-### Kolmogorov-Smirnov Test (Single Sample)
+To delve deeper into the factors influencing cancer types, we employed the multinomial logistic regression model, inputing gene expression values of various genes ---particularly those capturing maximum variability identified through Principal Component Analysis (PCA). We performed parametric tests, including multiple F-tests, to assess differences in mean gene expression levels among cancer types. Rejection of the null hypothesis for certain genes in these tests signified the presence of significant differences. Additionally, the one-vs-all t-test allowed us to compare specific cancer groups against the rest, contributing to a better understanding of inter-grouped differences.
 
-\textbf{Model :} $X_1, X_2,...,X_n\overset{iid}{\sim}F(x)$\\
-\textbf{Assumption :} Here we assume the F is absolutely continuous distribution function.\\
-\textbf{Hypothesis :} Here we are interested in testing whether the random sample come from a known distribution with distribution function $F_0(x)$ (say). That is,\\[-10pt]
-$$H_0 : F=F_0 \text{ against } H_a : F\neq F_0$$\\[-15pt]
-where $F=F_0\equiv F(x)=F_0(x)$ $\forall$ $x$\\
-and $F=F_0\equiv F(x)\neq F_0(x) \text{ with strict inequality for atleast one } x$\\
-Here we are mainly interested in checking Normality. So, $F_0(x)=\Phi(x)$\\
-So, the hypothesis becomes,\\[-10pt]
-$$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$\\[-15pt]
-where $\Phi$ is the cumulative distribution function of standard normal distribution.\\
-\textbf{Test Statistic :} For testing $H_0$ against $H_a$ we define the following statistic,\\
-$$D_n = \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right|$$\\[-10pt]
-Notice that $\widehat{F_n(x)}$ approximate the true distribution function $\Phi$ . $\widehat{F_n(x)}$ by definition is a step function i.e. the absolute difference measured by $D_n$ provide us the departure of the true situation from the null hypothesis towards the corresponding alternative.\\
-The distribution of the test statistics is free from the population distribution.\\
-\textbf{Distribution Free :}\\
-\textcolor{violet}{Exact Distribution Free (EDF) of $D_n$ :} Here we use the ordered statistics,\\[-10pt]
-$$X_{(1)}, X_{(2)}, ... , X_{(n)}, \text{ Further we denote } X_{(0)}=-\infty \text{ and } X_{(n+1)}=\infty$$\\[-22.5pt]
-\begin{align*}
-    D_n &= \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right| \\
-    &= \max_{i=0,1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\right\}\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\frac{i}{n}-\Phi(x)\right|\right\}\right\} \hspace{30pt} \left[\becauses \widehat{F_n(x)}=\frac{i}{n}\right]\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\left|\frac{i}{n}-\Phi(x_{(i)})\right|\right\}\right\}\\
-\end{align*}\\[-21pt]
-Notice that,\\[-15pt]
-$$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\[-23.5pt]
-{\scriptsize{$$\hspace{20mm}H_0$$}}\\[-20.5pt]
-$$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\[-23.5pt]
-{\scriptsize{$$\hspace{16.5mm}H_0$$}}\\[-20.5pt]
-Since $\Phi$ is absolutely continuous, we can conclude that,\\[-8pt]
-$$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\[-24pt]
-{\scriptsize{$$\hspace{22mm}H_0$$}}\\[-13pt]
-That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, 
-U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\
-\textbf{Test :} Notice that $D_n$ depends on the empirical distribution function $\widehat{F_n(x)}$ which represents the true distribution function. Thus the directional difference measured by $D_n$ actually indicate the departure of the true situation form the null hypothesis towards the alternative $H_a$ i.e. under $H_a : F\neq F_0$ becomes larger than that under $H_0$. On the other hand a small value of $D_n$ indicates the acceptance of $H_0$. Thus a right tail test based on $D_n$ will be appropriate for testing  $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$.\\
-We reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-10pt]
-$$D_n > d_\alpha$$\\[-15pt]
-In terms of p-value we can say, we reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-8pt]
-$$p-value=P_{H_{0}}\left(D_n\ge observed(D_n)\right)\le \alpha$$\\
+## Acknowledgement
 
+We express our sincere gratitude to Prof. Subhajit Dutta for his continuous supervision and invaluable support throughout the completion of this project. His guidance, insights and encouragement have been instrumental in shaping our trajectory. We had the privilege of applying the knowledge gained under his course, `MTH209: Data Science Lab - II` to tackle a real-world problem. This opportunity allowed us to delve deep into the subject matter and hone our abilities through practical applications.
+
+We also extend our heartfelt thanks to our Teaching Assistant, Mr. Arghya Mukherjee for his assistance in guiding us through the process of selecting the project topic and steering us in the right direction. Amidst the initial confusion about choosing a topic, his wisdom helped us align our mutual interests to meet our goals. We are grateful for the unwavering support and encouragement from them which played a monumental role in the successful completion of this project.
+
+Lastly, I, Sarbojit, am deeply indebted to all my teammates who generously shared their valuable suggestions and provided feedback during the initial stages of drafting this report. Without their constructive input and support, this compilation would not have been possible. We extend our heartfelt gratitude to Swapnonil, our group captain, for his unwavering availability and leadership throughout this project. His dedication in ensuring adherence to deadlines and effective management of the group has been instrumental in our collective success.
 
 ## References
 
--   Fundamentals of Statistics (Volume One); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., 2019.
+-   Fundamentals of Statistics (*Volume One*); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., $2019$.
 
--   The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (Paperback) -- 29 July, 2007
+-   The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (*Paperback*) -- $29$ July, $2007$.
