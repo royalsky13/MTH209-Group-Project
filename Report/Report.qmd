@@ -642,7 +642,7 @@ $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \end{tabular}
 \end{table}
 ```
-Here considering $H_{0i} : \beta_j = 0$ vs $H_{1i} : \beta_j \neq 0$, we observe that from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$. (For Further See Appendix)
+Here, considering $H_{0i} : \beta_j = 0$ vs $H_{1i} : \beta_j \neq 0$, we observe that from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$. (For Further See Appendix)
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
