@@ -616,7 +616,7 @@ Now, from this we observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\s
     \end{cases}
 \end{equation*}
 
-Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
+Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$ , where $X^T_j$ is the $jth$ row of the $X$ matrix, where the first column of the $X$ matrix is 1 and the $kth$ column of the $X$ matrix is the gene_k's expression value.
 
 Now, by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
 
@@ -642,7 +642,7 @@ $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \end{tabular}
 \end{table}
 ```
-Here from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$.
+Here considering $H_{0i} : \beta_j = 0$ vs $H_{1i} : \beta_j \neq 0$, we observe that from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$. (For Further See Appendix)
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
@@ -868,3 +868,12 @@ Lastly, I, Sarbojit, am deeply indebted to all my teammates who generously share
 -   Fundamentals of Statistics (*Volume One*); A.M. Gun, M.K. Gupta, B. Dasgupta; The World Press Pvt. Ltd., $2019$.
 
 -   The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (*Paperback*) -- $29$ July, $2007$.
+
+## Appendix
+
+1. \textbf{Testing of Significance of the Regression coefficients in Multinomial Logistic Regression}
+Model : Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$
+Assumptions : The error term $\epsilon$ is such that $E(\epsilon) = 0$ and $Var(\epsilon) = \sigma^2$
+Hypothesis : $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$
+Test statistic : $ T = \sqrt{k}\frac{\widehat{\beta_i}}{standard error} \overset{a}{\sim} N(0,1)$ under $H_{0i}$
+Test Rule : We reject $H_{0j}$ at level alpha iff $p-value = P(T >= observed) <= \alpha
