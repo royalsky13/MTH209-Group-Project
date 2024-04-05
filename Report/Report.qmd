@@ -904,12 +904,12 @@ $$X_{(1)}, X_{(2)}, ... , X_{(n)}, \text{ Further we denote } X_{(0)}=-\infty \t
     &= \max\left\{o, \max_{i=1,2,...,n}\left\{\left|\frac{i}{n}-\Phi(x_{(i)})\right|\right\}\right\}\\
 \end{align*}\\[-21pt]
 Notice that,\\[-15pt]
-$$X_1, X_2,...,X_n\distras{iid}\Phi$$\\[-23.5pt]
+$$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\[-23.5pt]
 {\scriptsize{$$\hspace{19mm}H_0$$}}\\[-20.5pt]
-$$\implies U_i=\Phi(X_i)\distras{iid}U(0,1)$$\\[-23.5pt]
+$$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\[-23.5pt]
 {\scriptsize{$$\hspace{15.5mm}H_0$$}}\\[-20.5pt]
 Since $\Phi$ is absolutely continuous, we can conclude that,\\[-8pt]
-$$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\distras{iid}U(0,1)$$\\[-24pt]
+$$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\[-24pt]
 {\scriptsize{$$\hspace{21mm}H_0$$}}\\[-13pt]
 That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, 
 U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\
