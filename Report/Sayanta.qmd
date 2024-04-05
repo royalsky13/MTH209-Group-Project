@@ -1,0 +1,544 @@
+---
+title: \huge \textbf{Non-Parametric Tests}
+subtitle: \Large \textbf{My Part}
+author: "Sayanta Biswas"
+format: 
+  pdf:
+    number-sections: true
+    number-depth: 2
+    keep-tex: true
+    documentclass: article
+execute: 
+  cache: true
+editor: visual
+geometry: margin=1in
+header-includes:
+   - \usepackage{amsmath, amssymb, setspace}
+   - \onehalfspacing
+   - \usepackage{etoolbox} 
+   - \makeatletter 
+   - \preto{\@verbatim}{\topsep=3pt \partopsep=3pt } 
+   - \makeatother
+---
+
+
+\newpage
+\section{Non-parametric Tests}
+\subsection{Shapiro-Wilk Normality Test}
+In our analysis we have used this test in two different cases. At first, we had to check whether the gene expression values in the dataset `ICMR.Rdata` are normally distributed or not. Secondly, we used it to check whether the ages of male and female cancer patients are normally distributed. This is performed using the `R` function called `shapiro.test()`. For further details see \textbf{Appendix}. 
+
+\subsubsection{Test for Gene Expression Values}
+Here expressions of 20,532 different genes are recorded. Among them only 1,767 gene expressions can be considered to be normally distributed at 5% level of significance. Each of the 20,532 genes are tested for normality individually. Each gene has 800 different expression value.
+
+We have, 
+
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ expression value for the $i^{th}$ gene. 
+  Here $i=1, 2, 3, ....,20532$ and $j=1,2,....800$.
+  -  The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+  -  The test is a level $\alpha=0.05$ both sided test.
+  
+  
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ gene expression comes from $\Phi_{i}$ which is the normal distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Phi_{i} \text{ against } H_{ia} : F_{i}\neq \Phi_{i} \text{  }\forall{i}$$
+
+The $i^{th}$ Wilk-Shapiro test statistic is,
+$$
+W_{i} = \frac{(\sum_{j=1}^{800} a_{i_{j}}X_{i_{(j)}})^2}{(\sum_{j=1}^{800} (X_{i_{j}}-\bar{X}_{i})^2)} \text{        where    } a_{i_{j}} = (a_{i_{1}}, a_{i_{2}}, ...a_{i_{n}}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+$$
+  
+  
+  -  $X_{i_{(j)}}$ \text{and} $\bar{X}_{i}$ are the $j^{th}$ order statistics and the $i^{th}$ sample mean respectively.
+  
+  -  $m_{i}=(m_{i_{1}},m_{i_{2}}, ...m_{i_{800}})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+  
+  -  $V_{i}$ is the covariance matrix of those order statistics of the $i^{th}$ sample.
+  -  [Rejection Criteria]{.underline}: If the p-value is smaller than a pre-determined significance level $\alpha$, we reject $H_{0}$.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+\newpage
+
+[\textbf{Findings}]{.underline}: After running Shapiro-Wilk Test on each of the 20,532 genes' expression values, we assembled all the informations like name of the genes, W-Statistic values, p-values and accept-reject decisions into a single dataframe named `shapiro.csv`. The output is displayed below through tables.
+  
+\begin{table}[htbp]
+    \centering
+    \caption{5 Random draws of rows}
+    \begin{tabular}{c|c|c|c}
+        \hline
+        Gene & W & p-value & Rejected \\
+        \hline
+        gene\_12090 & 0.9534434 & 9.950693e-15 & TRUE \\
+        gene\_11126 & 0.9977158 & 3.538067e-01 & FALSE \\
+        gene\_1929 & 0.9921550 & 3.997301e-04 & TRUE \\
+        gene\_14104 & 0.9828147 & 8.043263e-08 & TRUE \\
+        gene\_11549 & 0.9887918 & 1.271188e-05 & TRUE \\
+        \hline
+    \end{tabular}
+\end{table}
+
+The table below shows the genes which have the highest p-values. That means these genes' expression values are very likely to be normally distributed.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Top 4 normally distributed gene expressions}
+    \begin{tabular}{c|c|c|c}
+        \hline
+        Gene & W & p-value & Rejected \\
+        \hline
+        gene\_18776 & 0.99939029519 & 0.9977 & FALSE \\
+        gene\_13337 & 0.99929787407 & 0.9937 & FALSE \\
+        gene\_745 & 0.99921778732 & 0.9872 & FALSE \\
+        gene\_4471 & 0.99921284749 & 0.9867 & FALSE \\
+        \hline
+    \end{tabular}
+\end{table}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+\newpage 
+
+\subsubsection{Testing for Normality of Cancer Patients' Age}
+Here age data of 1,461,427 cancer patients are recorded. Among them 749,251 patients are female and 712,176 patients are male. We have tested whether this data is normally distributed.
+
+We have, 
+
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+  -  The test is a level $\alpha=0.05$ both sided test.
+  
+  
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ age sample comes from $\Phi_{i}$ which is the normal distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Phi_{i} \text{ against } H_{ia} : F_{i}\neq \Phi_{i} \text{  }\forall{i}$$
+
+The $i^{th}$ Wilk-Shapiro test statistic is,
+$$
+W_{i} = \frac{(\sum_{j=1}^{n_{i}} a_{i_{j}}X_{i_{(j)}})^2}{(\sum_{j=1}^{n_{i}} (X_{i_{j}}-\bar{X}_{i})^2)} \text{        where    } a_{i_{j}} = (a_{i_{1}}, a_{i_{2}}, ...a_{i_{n_{i}}}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+$$
+  
+  
+  -  $X_{i_{(j)}}$ \text{and} $\bar{X}_{i}$ are the $j^{th}$ order statistics and the $i^{th}$ sample mean respectively.
+  
+  -  $m_{i}=(m_{i_{1}},m_{i_{2}}, ...m_{i_{n_{i}}})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+  
+  -  $V_{i}$ is the covariance matrix of those order statistics of the $i^{th}$ sample.  
+  -  [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+
+[\textbf{Findings}]{.underline}: Here it turns out that the age distribution of \underline{female} cancer patients are very less likely to have normal distribution. As the p-value of the test is $p_{f} < 0.05$. So, $H_{f0}$ is rejected at 5% level of significance.
+```{r}
+#| echo: false
+##Generating a synthetic dataset for female cancer patients 
+FRE_F <- c(13709, 94166, 425918, 215458)
+dfem <- rep(c(15,40, 65, 80), FRE_F)
+
+### first decide the bandwidth
+bw1 = 4.89
+f <- density(dfem, bw = bw1)$x #female age values
+shapiro.test(f)
+```
+Similarly, as $p_{m}<0.05$ the null hypothesis $H_{m0}$ is rejected at 5% level of significance. Therefore, it is safe to say age of male cancer patients are not normally distributed.
+```{r}
+#| echo: false
+##Generating a synthetic dataset for female cancer patients 
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+
+### first decide the bandwidth
+bw2 = 4.89
+m <- density(dma, bw = bw2)$x #male age values
+shapiro.test(m)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\subsection{Kolmogorov-Smirnov One Sample Test}
+Previously, we performed Shapiro-Wilk test to check the normality of the age of cancer patients. WS test works better for checking whether the data is normal or not. But, to check about the other distribution we are using very popular Kolmogorov-Smirnov test. For theory see \textbf{Appendix}.
+
+
+
+We have, 
+
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+  -  The test is a level $\alpha=0.05$ both sided test.
+  
+  
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ age sample comes from $\Gamma_{i}$ which is the gamma distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Gamma_{i} \text{ against } H_{ia} : F_{i}\neq \Gamma_{i} \text{  }\forall{i}$$
+
+The Kolmogorov-Smirnov test statistics are,
+$$
+D_{n_{m}} = \max_x |S_{n_{m}}(x) - \Gamma_{m}(x)| \text{ } \text{ } \text{ and } \text{ } \text{ }
+D_{n_{f}} = \max_x |S_{n_{f}}(x) - \Gamma_{f}(x)|
+$$
+
+  
+  -  $S_{n_{m}}(x)$ and $S_{n_{f}}(f)$ are respectively the empirical distribution function of male and female age sample.
+  
+  -  [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+
+[\textbf{Findings}]{.underline}: Here it turns out that the age distribution of \underline{female} cancer patients are very less likely to have gamma distribution. As the p-value of the test is $p_{f} < 0.05$. So, $H_{f0}$ is rejected at 5% level of significance.
+```{r}
+#| echo: false
+#KS Test Code
+FRE_F <- c(13709, 94166, 425918, 215458)
+dfem <- rep(c(15,40, 65, 80), FRE_F)
+
+### first decide the bandwidth
+bw1 = 4.89
+f <- density(dfem, bw = bw1)$x #female age values
+density_f <- density(dfem, bw = bw1)$y #corresponding densities
+
+
+########## Now we calculate the  empirical distribution function
+sorted_vals_f <- sort(f)
+#cumulative density
+cum_density_f <- cumsum(density_f)
+ecdf_f <- cum_density_f/sum(density_f) 
+
+
+###### Plotting the normal cdf for female
+#plotting normal cdf
+# Calculate normal CDF for female
+mu <- mean(sorted_vals_f)
+sigma <- sd(sorted_vals_f)
+normal_cdf <- pnorm(sorted_vals_f, mean = mu, sd = sigma)
+
+
+
+
+######Calculating Gamma CDF for female
+scale_f = (sigma^2)/mu
+shape_f = mu/scale_f
+gamma_cdf <- pgamma(sorted_vals_f, shape = shape_f , scale = scale_f)
+
+
+##### KS Test
+ks.test(f, "pgamma", shape_f, scale_f)
+```
+Similarly, as $p_{m}<0.05$ the null hypothesis $H_{m0}$ is rejected at 5% level of significance. Therefore, it is safe to say age of male cancer patients are not gamma distributed.
+```{r}
+#| echo: false
+############## For males
+
+
+##Generating a synthetic dataset for female cancer patients 
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+
+### first decide the bandwidth
+bw2 = 4.89
+m <- density(dma, bw = bw2)$x #male age values
+density_m <- density(dma, bw = bw2)$y #corresponding densities
+
+
+
+########## Now we calculate the  empirical distribution function
+sorted_vals_m <- sort(m)
+#cumulative density
+cum_density_m <- cumsum(density_m)
+
+ecdf_m <- cum_density_m/sum(density_m) 
+
+
+###### Plotting the normal cdf 
+#plotting normal cdf
+# Calculate normal CDF
+mu_m <- mean(sorted_vals_m)
+sigma_m <- sd(sorted_vals_m)
+normal_cdf_m <- pnorm(sorted_vals_m, mean = mu_m, sd = sigma_m)
+
+
+
+
+######Calculating Gamma CDF
+scale_m = (sigma_m^2)/mu_m
+shape_m = mu_m/scale_m
+gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
+
+ks.test(m, "pgamma", shape_m, scale_m) #testing whether gamma dist or not
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\subsection{Kolmogorov Smirnov Two Sample Test}
+Now we will test whether the age of male cancer patients and female cancer patients come from the same population or not by two sample KS Test. For theory see \textbf{Appendix}.
+
+
+
+We have, 
+
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  The distribution functions $F_{m}$ and $F_{f}$ are assumed to be absolutely continuous.
+  -  The test is a level $\alpha=0.05$ both sided test.
+  
+The null hypothesis $H_{0}$ is that the two distribution functions $F_{m}$ and $F_{f}$ are same. While, the alternative hypothesis is they are not equal. $$H_{0} : F_{f}= F_{m}\text{  } \text{  } \text{ against } \text{  } \text{  } H_{a} : F_{f} \neq F_{m} $$
+
+The Kolmogorov-Smirnov test statistic can be defined as,
+$$
+D_{m,f} = \max_x |S_{n_{f}}(x) - S_{{n_{m}}}(x)|
+$$
+
+  
+  -  $S_{n_{m}}(x)$ and $S_{n_{f}}(f)$ are respectively the empirical distribution function of male and female age sample.
+  
+  -  [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+
+[\textbf{Findings}]{.underline}: Here it is evident that the p-value is very high. At 5% (or even higher) level of significance $H_{0}$ cannot be rejected as $p > 0.05$. It is safe to conclude that the gender-wise age of cancer patients have same distribution. 
+
+```{r}
+#| echo: false
+ks.test(m, f, alternative = "two.sided")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+```{r}
+#| echo: false
+#| fig_height: 6
+plot <- plot(sorted_vals_m, ecdf_m, type = "s", 
+             main = "Empirical CDF's", xlab = "Age of male & female cancer patients", 
+             ylab = "Cumulative Probability")
+lines(sorted_vals_f, ecdf_f, type = "s", col = "pink")
+legend("topleft", legend = c("Empirical CDF females", "Empirical CDF females"), 
+       lty = 1, col = c("black", "pink"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Appendix}
+\subsection{Shapiro-Wilk Normality Test}
+
+Shapiro and Wilk (1965) test was originally restricted for sample size of less than 50. This test was the first test that was able to detect departures from normality due to either skewness and kurtosis, or both. It has become the preferred test because of its good power properties.
+
+
+-   [Model]{.underline}: $X_1, X_2,...,X_n\overset{iid}{\sim}F(x)$ 
+
+-   [Assumption]{.underline}:   $F$ is absolutely continuous.
+
+-   [Hypothesis]{.underline}: The null hypothesis $H_0$ assumes the random samples comes from a normal population with distribution function $\Phi$, while the alternative says that it does not come from $\Phi$. $$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$
+-   [Test Statistics]{.underline}: The required test statistic $W \in [0,1]$
+$$
+W = \frac{(\sum_{i=1}^n a_{i}X_{(i)})^2}{(\sum_{i=1}^n (X_{i}-\bar{X})^2)} \text{        where    } a_{i} = (a_{1}, a_{2}, ...a_{n}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+$$
+    -  $X_{(i)}$ \text{and} $\bar{X}$ are the $i^{th}$ order statistics and the sample mean respectively.
+    -  $m=(m_{1}, m_{2}, ...m_{n})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+    -  $V$ is the covariance matrix of those order statistics.
+-   [Rejection Criteria]{.underline}: If the p-value is smaller than a pre-determined significance level $\alpha$, we reject $H_{0}$.
+
+\subsection{Empirical Distribution Function (EDF)}
+For a random sample from the distribution $F_{X}$, the empirical distribution
+function or edf, denoted by $S_{n}(x)$, is simply the proportion of
+sample values less than or equal to the specified value $x$, that is,
+
+$$S_{n}(x)=\frac{\text{number of sample values} \leq x}{n}$$
+Suppose that the $n$ sample observations are distinct and arranged in increasing order so that $X_{(1)}$ is the smallest, $X_{(2)}$ is the second smallest, . . . , and $X_{(n)}$ is the largest. Then, a formal definition of the edf $S_{n}(x)$ is
+$$
+S_n(x) = 
+\begin{cases}
+    0 & \text{if } x < X_{(1)} \\ 
+    \frac{i}{n} & \text{if } X_{(i)} \leq x < X_{(i+1)} \text{ for } \text{  } i = 1, 2, \ldots, n \\
+    0 & \text{if } x \geq X_{(n)}
+\end{cases}
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\subsection{The Kolmogorov-Smirnov Two Sample Test}
+
+Two sample KS test is a non-parametric test which is used to compare two different samples are coming from the same population or not.
+
+The order statistics corresponding to two random samples of size $m$ and $n$ from continuous populations $F_{X}$ and $F_{Y}$, are
+
+$$X_{(1)}, X_{(2)},...,X_{(m)} \text{   and    } \text{  } Y_{(1)}, Y_{(2)},...,Y_{(n)}$$
+
+
+Their respective empirical distribution functions, denoted by $S_{m}(x)$ and $S_{n}(x)$, are defined as:
+
+$$
+S_m(x) = 
+\begin{cases}
+    0 & \text{if } x < X_{(1)} \\ 
+    \frac{k}{m} & \text{if } X_{(k)} \leq x < X_{(k+1)} \text{ for } \text{  } k = 1, 2, \ldots, m-1 \\
+    0 & \text{if } x \geq X_{(m)}
+\end{cases}
+$$
+
+and
+
+$$
+S_n(x) = 
+\begin{cases}
+    0 & \text{if } x < Y_{(1)} \\ 
+    \frac{k}{n} & \text{if } Y_{(k)} \leq x < Y_{(k+1)} \text{ for } \text{  } k = 1, 2, \ldots, n-1 \\
+    0 & \text{if } x \geq Y_{(n)}
+\end{cases}
+$$
+In a combined ordered arrangement of $m+n$ sample observations, $S_m(x)$ and $S_n(x)$ are the respective proportions of $X$ and $Y$ observations which do not exceed the specified value $x$.
+
+If the null hypothesis
+
+$$
+H_0: F_Y(x) = F_X(x)  \text{  } \text{ } \forall{x}
+$$
+
+is true, the population distributions are identical and we have two samples from the same population. The empirical distribution functions for the $X$ and $Y$ samples are reasonable estimates of their respective population cdf. Therefore, allowing for sampling variation, there should be reasonable agreement between the two empirical distributions if indeed $H_0$ is true; otherwise the data suggest that $H_0$ is not true and therefore should be rejected. In other words, how close do the two empirical cdf's have to be so that they could be viewed as not significantly different, taking account of the sampling variability. This approach necessarily requires a definition of closeness. The two-sided Kolmogorov-Smirnov two-sample test criterion, denoted by $D_{m,n}$, is based on the maximum absolute difference between the two empirical distributions.
+
+$$
+D_{m,n} = \max_x |S_{m}(x) - S_{n}(x)| 
+$$
+
+Since here only the magnitudes, and not the directions, of the deviations are considered, $D_{m,n}$ is appropriate for a general two-sided alternative
+
+$$
+H_A: F_Y(x) \neq F_X(x) \text{ for some } x.
+$$
+
+and the rejection region is in the upper tail, defined by
+
+$$
+D_{m,n} \geq c_{\alpha}
+$$
+where
+
+$$
+P(D_{m,n} \geq c_{\alpha} \,|\, H_0) \leq \alpha
+$$
+Because of the Glivenko-Cantelli theorem, the test is consistent for this alternative. The p-value is
+
+$$
+p = P(D_{m,n} \geq D_{observed} \,|\, H_0)
+$$
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{References}
+  -   Razali, N. and Wah, Y. (2011) Power Comparisons of Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors and Anderson-Darling tests. Journal of Statistical Modeling and Analytics, 2, 21-33.
+  
+  -   Wilk, W. (2015) Shapiro Wilk And Related Tests For Normality, Massachusetts Insitute of Technology
+  
+  -   Gibbons, J.D. and Chakraborti, S. (2014), Nonparametric Statistical Inference, Fourth Edition: Revised and Expanded
+
+
+
+
+
+
