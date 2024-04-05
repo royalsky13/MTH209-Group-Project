@@ -871,12 +871,14 @@ Lastly, I, Sarbojit, am deeply indebted to all my teammates who generously share
 
 ## Appendix
 
-1. \textbf{Testing of Significance of the Regression coefficients in Multinomial Logistic Regression}
-Model : Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$
-Assumptions : The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$
-Hypothesis : $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$
-Test statistic : $ T = \sqrt{k}\frac{\widehat{\beta_i}}{standard error} \overset{a}{\sim} N(0,1)$ under $H_{0i}$
-Test Rule : We reject $H_{0j}$ at level alpha iff $p-value = P(T >= observed) <= \alpha
+```{=tex}
+1. \textbf{Testing of Significance of the Regression coefficients in Multinomial Logistic Regression}\\[10pt]
+\underline{\textbf{Model :}} Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$\\[10pt]
+\underline{\textbf{Assumptions :}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$\\[10pt]
+\underline{\textbf{Hypothesis :}} $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$\\[10pt]
+\underline{\textbf{Test statistic :}} Here our test statistic is $$T = \sqrt{k}\frac{\hat{\beta_i}}{\text{standard error}} \overset{a}{\sim} N(0,1)$$\\ [-36pt] {\scriptsize{$$\hspace{25mm}H_0$$}}\\ [-15pt]
+Test Rule : We reject $H_{0j}$ at level alpha iff $p-value = P(T \geq observed) \leq \alpha$\\
+```
 
 2. Kolmogorov Smirnov Test
 \textbf{Model :} $X_1, X_2,...,X_n\distras{iid}F(x)$\\
