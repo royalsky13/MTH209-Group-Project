@@ -136,7 +136,7 @@ Here age data of 1,461,427 cancer patients are recorded. Among them 749,251 pati
 
 We have, 
 
-  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
   -  The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
   -  The test is a level $\alpha=0.05$ both sided test.
   
@@ -201,7 +201,7 @@ Previously, we performed Shapiro-Wilk test to check the normality of the age of 
 
 We have, 
 
-  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
   -  The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
   -  The test is a level $\alpha=0.05$ both sided test.
   
@@ -329,7 +329,7 @@ Now we will test whether the age of male cancer patients and female cancer patie
 
 We have, 
 
-  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i=\{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+  -  $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
   -  The distribution functions $F_{m}$ and $F_{f}$ are assumed to be absolutely continuous.
   -  The test is a level $\alpha=0.05$ both sided test.
   
