@@ -1060,7 +1060,7 @@ We also extend our heartfelt thanks to our Teaching Assistants, Mr. Arghya Mukhe
 \underline{\textbf{Assumptions:}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$\\[10pt]
 \underline{\textbf{Hypothesis :}} $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$\\[10pt]
 \underline{\textbf{Test statistic:}} Here our test statistic is $$T = \sqrt{k}\frac{\hat{\beta_i}}{\text{standard error}} \overset{a}{\sim} N(0,1)$$\\ [-36pt] {\scriptsize{$$\hspace{25mm}H_0$$}}\\ [-15pt]
-\underline{\textbf{Test Rule:}} We reject $H_{0j}$ at level alpha iff $p-value = P(T \geq observed) \leq \alpha$\\
+\underline{\textbf{Test Rule:}} We reject $H_{0j}$ at level alpha iff $p-value = P(|T| \geq observed(T)) \leq \alpha$\\
 ```
 
 ### Shapiro-Wilk Normality Test
