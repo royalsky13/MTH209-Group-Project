@@ -19,7 +19,7 @@ date-format: long
 format: 
   pdf:
     number-sections: true
-    number-depth: 2
+    number-depth: 3
     keep-tex: true
     documentclass: article
     template-partials: 
@@ -256,6 +256,9 @@ ggplot(dat, aes(x = factor(Gender), y = Cases, fill = factor(Gender))) +
 #| fig-height: 5
 #| warning: false
 #| layout-ncol: 2
+#| fig-subcap: 
+#|           - "Stacked Histogram"
+#|           - "Density Plots"
 FRE_M <- c(21308, 74872, 341230, 274766)
 dma <- rep(c(15,40,65,80), FRE_M)
 hist(dma, breaks = c(0,15,40,65,80), xlim = c(0,100), 
@@ -270,16 +273,49 @@ hist(dfe, breaks = c(0,15,40,65,80), add=T,
       col=rgb(1, 0, 0, alpha=0.5))
 legend("topleft", legend=c("Male", "Female"), fill=c(rgb(0, 0, 1, alpha=0.5), rgb(1, 0, 0, alpha=0.5)))
 
-plot(density(dma, bw = 8),type="l", xlim = c(3.8,100), ylim = c(0.00105, 0.035),
-      main = "Cancer Incidence Density",col="blue",
-      xlab = "Age")
-lines(density(dfe, bw = 8), xlim = c(3.8,100),col="red",lty=2)
+FRE_F <- c(13709, 94166, 425918, 215458)
+dfem <- rep(c(15,40, 65, 80), FRE_F)
+### first decide the bandwidth
+bw1 = 4.89
+f <- density(dfem, bw = bw1)$x #female age values
+density_f <- density(dfem, bw = bw1)$y #corresponding densities
+
+### first decide the bandwidth
+bw2 = 4.89
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+m <- density(dma, bw = bw2)$x #male age values
+density_m <- density(dma, bw = bw2)$y #corresponding densities
+
+sorted_vals_f <- sort(f)
+cum_density_f <- cumsum(density_f)
+ecdf_f <- cum_density_f/sum(density_f) 
+mu <- mean(sorted_vals_f)
+sigma <- sd(sorted_vals_f)
+normal_cdf <- pnorm(sorted_vals_f, mean = mu, sd = sigma)
+scale_f = (sigma^2)/mu
+shape_f = mu/scale_f
+gamma_cdf <- pgamma(sorted_vals_f, shape = shape_f , scale = scale_f)
+sorted_vals_m <- sort(m)
+cum_density_m <- cumsum(density_m)
+ecdf_m <- cum_density_m/sum(density_m) 
+mu_m <- mean(sorted_vals_m)
+sigma_m <- sd(sorted_vals_m)
+normal_cdf_m <- pnorm(sorted_vals_m, mean = mu_m, sd = sigma_m)
+scale_m = (sigma_m^2)/mu_m
+shape_m = mu_m/scale_m
+gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
+plot(f, density_f, type = "l", xlab = "Age",
+     ylab = "density",col="red",lty=2, main="Estimated Cancer Incidence Density")
+lines(m, density_m, type = "l", col="blue")
 legend("topleft", legend = c("Male", "Female"), col = c("blue", "red"), lty = c(1,2))
 
 
 
 
+
 ```
+
 
 ### Gender-wise top ten cancer sites
 
@@ -410,27 +446,31 @@ Each sample has expression values for around $20$K genes. However, it may not be
 
 \newpage
 
-[Cumulative Explained Variance Plot]{.underline}:
+[\textbf{Cumulative Explained Variance Plot}]{.underline}:
 
 ![](download2.png){fig-align="center" width="448"}
 
--   The plot typically shows the cumulative proportion of variance explained on the y-axis and the number of principal components on the x-axis. As more principal components are added, the cumulative proportion of variance increases. The plot helps in identifying the point at which adding more principal components does not significantly increase the explained variance, which can be a guide for determining the appropriate number of principal components to retain.
+-   This plot typically shows the cumulative sum of explained variances explained on the Y-axis and the number of principal components on the X-axis.
 
--   This plot shows the cumulative sum of the explained variances for the components. The '*elbow*' or point where the curve starts to level off is often used to decide how many components one wants to keep.
+-   As more principal components are added, the cumulative proportion of variance increases.
+
+-   It helps in identifying the point at which adding more principal components does not significantly increase the explained variance, which can be a good guide for determining the appropriate number of principal components to retain.
+
+-   The '*elbow*' or point where the curve starts to level off is often used to decide how many components one wants to keep.
 
 -   From this curve, we see that it starts to flatten around $150$ - $200$ PCs, suggesting a potential elbow point in this range.
 
 \newpage
 
-[Remarks]{.underline}:
+[**Remarks**]{.underline}**:**
 
--   Class KIRC is notably more separable than other classes, indicating effective feature differentiation.
+-   Class PRAD is notably more separable than other classes, indicating effective feature differentiation.
 
--   PC$1$ and PC$2$ hold valuable information for distinguishing KIRC from other cancer types.
+-   PC$1$ and PC$3$ hold valuable information for distinguishing KIRC and PRAD from other cancer types.
 
--   Class PRAD exhibits enhanced separability, emphasizing the significance of PC$2$ and PC$3$.
+-   Classes PRAD and COAD exhibit enhanced separability, emphasizing the significance of PC$3$ and PC$4$.
 
--   PC$2$ and PC$3$ capture distinctive features for characterizing PRAD, making it more distinguishable.
+-   PC$3$ and PC$4$ capture distinctive features for characterizing PRAD, making it more distinguishable.
 
 ::: {#fig-2 layout-nrow="2"}
 ![PC1 vs PC3](pca1vs3.png){#fig-c fig-align="center" width="3.84in"}
@@ -518,7 +558,7 @@ kable(tail(variances_sorted, 3), caption = "Bottom 3 high variance genes", row.n
 In a one-vs-all t-test scenario, we compare the means of one cancer group (the "*one*" group) against the means of all other groups excluding that cancer group (the "*all*" group). It's commonly used in situations where one wants to compare a specific group against the rest of the data.
 
 |                       |                                                                                                                                                                                               |
-|--------------------|----------------------------------------------------|
+|----------------------|--------------------------------------------------|
 | **Independence**      | Gene expressions within the "*one*" group and "*all*" group are independent of each other.                                                                                                    |
 | **Normality**         | Each group's data follow approximately the normal distribution (by [Central Limit Theorem]{.underline}).                                                                                      |
 | **Random Sampling**   | The collective gene expressions data are obtained through a random sampling process from the population of cancer patients. This ensures that the sample is representative of the population. |
@@ -573,9 +613,9 @@ for (gene in selected_genes) {
 
 ## Multinomial Logistic Regression
 
-We want to fit Logistic Regression for predicting the probability of the occurrence of $5$ different types of cancer for an individual.
+-   [Goal]{.underline}: We want to fit Logistic Regression for predicting the probability of the occurrence of $5$ different types of cancer for an individual.
 
-Cancer types across different sites are of penultimate importance, particularly in studying the genetic effects on these cancer types. One common question that arises is the extent to which genetics influences these cancers. Our dataset primarily focuses on $5$ types of cancer: BRCA, COAD, KIRC, LUAD and PRAD. Through Principle Component Analysis (PCA), we have determined that the first $500$ genes capture the maximum variation. Now, we aim to investigate whether these genes exhibit any significant effects on these cancer types.
+-   [Motivation]{.underline}: Cancer types across different sites are of penultimate importance, particularly in studying the genetic effects on these cancer types. One common question that arises is that to which extent do genetics influences these cancers. Our dataset primarily focuses on $5$ types of cancer: BRCA, COAD, KIRC, LUAD and PRAD. Through Principle Component Analysis (PCA), we have determined that the first $500$ genes capture the maximum variation. Now, we aim to investigate whether these genes exhibit any significant effects on these cancer types.
 
 So, here we consider the different types of cancer as distinct labels, each associated with corresponding gene expression values. Our interest lies in fitting a Multinomial Logistic Regression Model. Let us examine the following table, which defines the probabilities of occurrence for each cancer type.
 
@@ -616,7 +656,7 @@ Now, from this we observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\s
     \end{cases}
 \end{equation*}
 
-Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$ , where $X^T_j$ is the $jth$ row of the $X$ matrix, where the first column of the $X$ matrix is 1 and the $kth$ column of the $X$ matrix is the gene_k's expression value.
+Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
 
 Now, by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
 
@@ -642,7 +682,7 @@ $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \end{tabular}
 \end{table}
 ```
-Here, considering $H_{0i} : \beta_j = 0$ vs $H_{1i} : \beta_j \neq 0$, we observe that from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$. (For Further See Appendix)
+Here from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$.
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
@@ -690,138 +730,238 @@ From this, we can see that for the first individual, according to the gene expre
 
 ## Non-Parametric Tests
 
+### Shapiro-Wilk Normality Test
+
+In our analysis, we have used this test in two different cases. At first, we had to check whether the gene expression values in the dataset, [ICMR.Rdata](https://drive.google.com/file/d/1deE-VbSUCll47XgUvrMothUlDm-s8Q_S/view?usp=drive_link) are normally distributed or not. Secondly, we used it to check whether the ages of male and female cancer patients are normally distributed. This is performed using the `R` function called `shapiro.test()`. For further details see [\textbf{Appendix}]{.underline}.
+
+**Testing for Gene Expression Values**
+
+Here expressions of $20,532$ different genes are recorded. Among them only $1,767$ gene expressions can be considered to be normally distributed at $5\%$ level of significance. Each of the $20,532$ genes are tested for normality individually. Each gene has $800$ different expression values.
+
+We have,
+
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ expression value for the $i^{th}$ gene. Here $i=1, 2, 3, ....,20532$ and $j=1,2,....800$.
+-   The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+-   The test is a level $\alpha=0.05$ both sided test.
+
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ gene expression comes from $\Phi_{i}$ which is the normal distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Phi_{i} \text{ against } H_{ia} : F_{i}\neq \Phi_{i} \text{  }\forall{i}$$
+
+The $i^{th}$ Wilk-Shapiro test statistic is, $$
+W_{i} = \frac{(\sum_{j=1}^{800} a_{i_{j}}X_{i_{(j)}})^2}{(\sum_{j=1}^{800} (X_{i_{j}}-\bar{X}_{i})^2)} \text{        where    } a_{i_{j}} = (a_{i_{1}}, a_{i_{2}}, ...a_{i_{n}}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+$$
+
+-   $X_{i_{(j)}}$ \text{and} $\bar{X}_{i}$ are the $j^{th}$ order statistics and the $i^{th}$ sample mean respectively.
+
+-   $m_{i}=(m_{i_{1}},m_{i_{2}}, ...m_{i_{800}})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+
+-   $V_{i}$ is the covariance matrix of those order statistics of the $i^{th}$ sample.
+
+-   [Rejection Criteria]{.underline}: If the p-value is smaller than a pre-determined significance level $\alpha$, we reject $H_{0}$.
+
+\newpage
+
+[\textbf{Findings}]{.underline}: After running Shapiro-Wilk Test on each of the 20,532 genes' expression values, we assembled all the informations like name of the genes, W-Statistic values, p-values and accept-reject decisions into a single dataframe named [shapiro.csv](https://github.com/royalsky13/MTH209-Group-Project/blob/main/Statistical%20Data%20Analysis/shapiro.csv). The output is displayed below through tables.
+
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{5 Random draws of rows}
+    \begin{tabular}{c|c|c|c}
+        \hline
+        Gene & W & p-value & Rejected \\
+        \hline
+        gene\_12090 & 0.9534434 & 9.950693e-15 & TRUE \\
+        gene\_11126 & 0.9977158 & 3.538067e-01 & FALSE \\
+        gene\_1929 & 0.9921550 & 3.997301e-04 & TRUE \\
+        gene\_14104 & 0.9828147 & 8.043263e-08 & TRUE \\
+        gene\_11549 & 0.9887918 & 1.271188e-05 & TRUE \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+The table below shows the genes which have the highest p-values. That means these genes' expression values are very likely to be normally distributed.
+
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{Top 4 normally distributed gene expressions}
+    \begin{tabular}{c|c|c|c}
+        \hline
+        Gene & W & p-value & Rejected \\
+        \hline
+        gene\_18776 & 0.99939029519 & 0.9977 & FALSE \\
+        gene\_13337 & 0.99929787407 & 0.9937 & FALSE \\
+        gene\_745 & 0.99921778732 & 0.9872 & FALSE \\
+        gene\_4471 & 0.99921284749 & 0.9867 & FALSE \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+\newpage
+
+**Testing for Normality of Cancer Patients' Age**
+
+Here age data of $1,461,427$ cancer patients are recorded. Among them $749,251$ patients are female and $712,176$ patients are male. We have tested whether this data is normally distributed.
+
+We have,
+
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+-   The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+-   The test is a level $\alpha=0.05$ both sided test.
+
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ age sample comes from $\Phi_{i}$ which is the normal distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Phi_{i} \text{ against } H_{ia} : F_{i}\neq \Phi_{i} \text{  }\forall{i}$$
+
+The $i^{th}$ Wilk-Shapiro test statistic is, $$
+W_{i} = \frac{(\sum_{j=1}^{n_{i}} a_{i_{j}}X_{i_{(j)}})^2}{(\sum_{j=1}^{n_{i}} (X_{i_{j}}-\bar{X}_{i})^2)} \text{        where    } a_{i_{j}} = (a_{i_{1}}, a_{i_{2}}, ...a_{i_{n_{i}}}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+$$
+
+-   $X_{i_{(j)}}$ \text{and} $\bar{X}_{i}$ are the $j^{th}$ order statistics and the $i^{th}$ sample mean respectively.
+
+-   $m_{i}=(m_{i_{1}},m_{i_{2}}, ...m_{i_{n_{i}}})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+
+-   $V_{i}$ is the covariance matrix of those order statistics of the $i^{th}$ sample.
+
+-   [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+[\textbf{Findings}]{.underline}: Here it turns out that the age distribution of \underline{female} cancer patients are very less likely to have normal distribution. As the p-value of the test is $p_{f} < 0.05$. So, $H_{f0}$ is rejected at 5% level of significance.
+
 ```{r}
-#| include: false
+#| echo: false
+##Generating a synthetic dataset for female cancer patients 
 FRE_F <- c(13709, 94166, 425918, 215458)
 dfem <- rep(c(15,40, 65, 80), FRE_F)
+
+### first decide the bandwidth
+bw1 = 4.89
+f <- density(dfem, bw = bw1)$x #female age values
+shapiro.test(f)
+```
+
+Similarly, as $p_{m}<0.05$ the null hypothesis $H_{m0}$ is rejected at 5% level of significance. Therefore, it is safe to say age of male cancer patients are not normally distributed.
+
+```{r}
+#| echo: false
+## Generating a synthetic dataset for female cancer patients 
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+
+### first decide the bandwidth
+bw2 = 4.89
+m <- density(dma, bw = bw2)$x #male age values
+shapiro.test(m)
+```
+
+### Kolmogorov-Smirnov Test
+
+#### One Sample Test
+
+Previously, we performed Shapiro-Wilk test to check the normality of the age of cancer patients. WS test works better for checking whether the data is normal or not. But, to check about the other distribution we are using very popular Kolmogorov-Smirnov test. For theory, see [\textbf{Appendix}]{.underline}.
+
+We have,
+
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$.
+-   The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
+-   The test is a level $\alpha=0.05$ both sided test.
+
+The $i^{th}$ null hypothesis $H_{i0}$ is that the $i^{th}$ age sample comes from $\Gamma_{i}$ which is the gamma distribution function. The corresponding alternative hypotheses are opposite. $$H_{i0} : F_{i}=\Gamma_{i} \text{ against } H_{ia} : F_{i}\neq \Gamma_{i} \text{  }\forall{i}$$
+
+The Kolmogorov-Smirnov test statistics are, $$
+D_{n_{m}} = \max_x |S_{n_{m}}(x) - \Gamma_{m}(x)| \text{ } \text{ } \text{ and } \text{ } \text{ }
+D_{n_{f}} = \max_x |S_{n_{f}}(x) - \Gamma_{f}(x)|
+$$
+
+-   $S_{n_{m}}(x)$ and $S_{n_{f}}(f)$ are respectively the empirical distribution function of male and female age sample.
+
+-   [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+\newpage
+
+[\textbf{Findings}]{.underline}: Here it turns out that the age distribution of \underline{female} cancer patients are very less likely to have gamma distribution. As the p-value of the test is $p_{f} < 0.05$. So, $H_{f0}$ is rejected at 5% level of significance.
+
+```{r}
+#| echo: false
+#KS Test Code
+FRE_F <- c(13709, 94166, 425918, 215458)
+dfem <- rep(c(15,40, 65, 80), FRE_F)
+
 ### first decide the bandwidth
 bw1 = 4.89
 f <- density(dfem, bw = bw1)$x #female age values
 density_f <- density(dfem, bw = bw1)$y #corresponding densities
 
-### first decide the bandwidth
-bw2 = 4.89
-FRE_M <- c(21308, 74872, 341230, 274766)
-dma <- rep(c(15,40, 65, 80), FRE_M)
-m <- density(dma, bw = bw2)$x #male age values
-density_m <- density(dma, bw = bw2)$y #corresponding densities
 
+########## Now we calculate the  empirical distribution function
 sorted_vals_f <- sort(f)
+#cumulative density
 cum_density_f <- cumsum(density_f)
 ecdf_f <- cum_density_f/sum(density_f) 
+
+
+###### Plotting the normal cdf for female
+#plotting normal cdf
+# Calculate normal CDF for female
 mu <- mean(sorted_vals_f)
 sigma <- sd(sorted_vals_f)
 normal_cdf <- pnorm(sorted_vals_f, mean = mu, sd = sigma)
+
+
+
+
+######Calculating Gamma CDF for female
 scale_f = (sigma^2)/mu
 shape_f = mu/scale_f
 gamma_cdf <- pgamma(sorted_vals_f, shape = shape_f , scale = scale_f)
+
+
+##### KS Test
+ks.test(f, "pgamma", shape_f, scale_f)
+```
+
+Similarly, as $p_{m}<0.05$ the null hypothesis $H_{m0}$ is rejected at 5% level of significance. Therefore, it is safe to say age of male cancer patients are not gamma distributed.
+
+```{r}
+#| echo: false
+############## For males
+
+
+##Generating a synthetic dataset for female cancer patients 
+FRE_M <- c(21308, 74872, 341230, 274766)
+dma <- rep(c(15,40, 65, 80), FRE_M)
+
+### first decide the bandwidth
+bw2 = 4.89
+m <- density(dma, bw = bw2)$x #male age values
+density_m <- density(dma, bw = bw2)$y #corresponding densities
+
+
+
+########## Now we calculate the  empirical distribution function
 sorted_vals_m <- sort(m)
+#cumulative density
 cum_density_m <- cumsum(density_m)
+
 ecdf_m <- cum_density_m/sum(density_m) 
+
+
+###### Plotting the normal cdf 
+#plotting normal cdf
+# Calculate normal CDF
 mu_m <- mean(sorted_vals_m)
 sigma_m <- sd(sorted_vals_m)
 normal_cdf_m <- pnorm(sorted_vals_m, mean = mu_m, sd = sigma_m)
+
+
+
+
+######Calculating Gamma CDF
 scale_m = (sigma_m^2)/mu_m
 shape_m = mu_m/scale_m
 gamma_cdf_m <- pgamma(sorted_vals_m, shape = shape_m , scale = scale_m)
 
+ks.test(m, "pgamma", shape_m, scale_m) #testing whether gamma dist or not
 ```
 
-### Shapiro-Wilk Test
-
--   We have performed this test to assess whether the datasets for male and female cancer patients come from a normal distribution. This is done using the `shapiro.test()` function in `R`.
-
--   [Null Hypothesis]{.underline} ($\text{H}_0$): The data are normally distributed.
-
--   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The data are not normally distributed.
-
--   [Rejection Criteria]{.underline}: If the p-value is less than or equal to the chosen significance level ($\alpha$), typically $0.05$ then $\text{H}_0$ is rejected. This implies that there is sufficient evidence to conclude that the data do not come from a normally distributed population. Else, there is not enough evidence to conclude that the data do not come from a normally distributed population and further data analysis is required.
-
--   This test is more powerful in detecting departures from normality over other normality tests, especially for [small to moderate sample sizes]{.underline}.
-
-[Question]{.underline}: Do our samples come from a normal population?
-
-[Ans]{.underline}: Applying the Shapiro-Wilk's Test,
-
-For **males**:
-
-```{r}
-#| echo: false
-shapiro.test(m)
-```
-
-$\boxed{\text{We reject H}_0}$
-
-For **females**:
-
-```{r}
-#| echo: false
-shapiro.test(f)
-```
-
-$\boxed{\text{We reject H}_0}$
-
-\newpage
-
-### Kolmogorov-Smirnov Test
-
--   We have performed the K-S test to compare to see if both the datasets come from the same distribution. This is done using the `ks.test()` function in `R`.
-
--   [Null Hypothesis]{.underline} ($\text{H}_0$): The two datasets are drawn from the same continuous distribution.
-
--   [Alternative Hypothesis]{.underline} ($\text{H}_1$): The two datasets are not drawn from the same continuous distribution.
-
--   [Rejection Criteria]{.underline}: If the p-value is less than or equal to the chosen significance level ($\alpha$), typically $0.05$ then $\text{H}_0$ is rejected. This implies that there is sufficient evidence to conclude that the two datasets are not drawn from the same continuous distribution. Else, there is not enough evidence and further data analysis is required.
-
-[Questions:]{.underline}
-
-1.  Do both the samples come from the same distribution?
-
-[Ans]{.underline}: Applying K-S Test,
-
-```{r}
-#| echo: false
-#| warning: false
-ks.test(f, m)
-```
-
-$\boxed{\text{We fail to reject H}_0}$
-
-2.  Does the ages of male and female cancer patients follow the Gamma distribution?
-
-[Ans]{.underline}: For **females**:
-
-```{r}
-#| echo: false
-ks.test(f, "pgamma", shape_f, scale_f)
-```
-
-$\boxed{\text{We reject H}_0}$
-
-For **males**:
-
-```{r}
-#| echo: false
-ks.test(m, "pgamma", shape_m, scale_m)
-```
-
-$\boxed{\text{We reject H}_0}$
-
-\newpage
-
-We have estimated the probability density function of both the datasets using kernel density estimation with a specified bandwidth $4.89$ and plotted below.
-
-```{r}
-#| echo: false
-#| layout-ncol: 2
-#| fig-height: 5
-plot(f, density_f, type = "l", xlab = "Age of female cancer patients",
-     ylab = "density")
-plot(m, density_m, type = "l", xlab = "Age of male cancer patients",
-     ylab = "density")
-```
-
-We have calculated and plotted the empirical cumulative distribution function (ECDFs) for both the datasets. The theoretical cumulative distribution functions (CDFs) for normal and gamma distributions which are fitted to our datasets are also plotted alongside for visual comparision.
+We have summarised our findings from the above in the following plots given below:
 
 ```{r}
 #| layout-ncol: 2
@@ -844,6 +984,54 @@ lines(sorted_vals_m, gamma_cdf_m, col = "green")
 legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
        lty = 1, col = c("black", "red", "green"))
 ```
+\newpage
+
+#### Two Sample Test
+
+Now we will test whether the age of male cancer patients and female cancer patients come from the same population or not by two sample KS Test. For theory, see [\textbf{Appendix}]{.underline}.
+
+We have,
+
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$.
+-   The distribution functions $F_{m}$ and $F_{f}$ are assumed to be absolutely continuous.
+-   The test is a level $\alpha=0.05$ both sided test.
+
+The null hypothesis $H_{0}$ is that the two distribution functions $F_{m}$ and $F_{f}$ are same. While, the alternative hypothesis is they are not equal. $$H_{0} : F_{f}= F_{m}\text{  } \text{  } \text{ against } \text{  } \text{  } H_{a} : F_{f} \neq F_{m} $$
+
+The Kolmogorov-Smirnov test statistic can be defined as, $$
+D_{m,f} = \max_x |S_{n_{f}}(x) - S_{{n_{m}}}(x)|
+$$
+
+-   $S_{n_{m}}(x)$ and $S_{n_{f}}(f)$ are respectively the empirical distribution function of male and female age sample.
+
+-   [Rejection Criteria]{.underline}: If the p-value is less than $\alpha = 0.5$, we reject $H_{0}$.
+
+\newpage
+
+[\textbf{Findings}]{.underline}: Here it is evident that the p-value is very high. At 5% (or even higher) level of significance $H_{0}$ cannot be rejected as $p > 0.05$. It is safe to conclude that the gender-wise age of cancer patients have same distribution.
+
+```{r}
+#| echo: false
+#| warning: false
+ks.test(m, f, alternative = "two.sided")
+```
+
+- In the analyzed age group, our findings reveal a notable trend in cancer prevalence, with breast cancer and cervix cancer exhibiting higher incidence rates among females compared to males. This observation suggests that these types of cancer disproportionately affect females within this age range . 
+
+- Furthermore, our analysis indicates a notable increase in the number of patients diagnosed with these cancers, underscoring their dominant presence in the realm of cancer analysis. 
+
+```{r}
+#| echo: false
+#| fig-height: 4.5
+#| fig-align: center
+#| fig-cap: Plot of Empirical CDF's
+plot <- plot(sorted_vals_m, ecdf_m, type = "s", 
+             main = "Empirical CDF's", xlab = "Ages of male and female cancer patients", 
+             ylab = "Cumulative Probability")
+lines(sorted_vals_f, ecdf_f, type = "s", col = "pink")
+legend("topleft", legend = c("Empirical CDF males", "Empirical CDF females"), 
+       lty = 1, col = c("black", "pink"))
+```
 
 \newpage
 
@@ -853,15 +1041,140 @@ In brief, our analysis of cancer incidence in India reveals significant findings
 
 Furthermore, our exploration of different cancer types demonstrated non-uniform distribution, with varying percentages of occurrence across the different types. We observed that Breast Cancer (BRCA) contained the most data points, almost $38\%$ of the entire dataset.
 
-To delve deeper into the factors influencing cancer types, we employed the multinomial logistic regression model, inputing gene expression values of various genes ---particularly those capturing maximum variability identified through Principal Component Analysis (PCA). We performed parametric tests, including multiple F-tests, to assess differences in mean gene expression levels among cancer types. Rejection of the null hypothesis for certain genes in these tests signified the presence of significant differences. Additionally, the one-vs-all t-test allowed us to compare specific cancer groups against the rest, contributing to a better understanding of inter-grouped differences.
+To delve deeper into the factors influencing cancer types, we employed the multinomial logistic regression model, inputing gene expression values of various genes ---particularly those capturing maximum variability identified through Principal Component Analysis (PCA). We performed parametric tests to assess differences in mean gene expression levels among cancer types. Rejection of the null hypothesis for certain genes in these tests signified the likeliness of significant differences for which further data analysis is required.  Additionally, the one-vs-all t-test allowed us to compare specific cancer groups against the rest, contributing to a better understanding of inter-grouped differences.
 
 ## Acknowledgement
 
-We express our sincere gratitude to Prof. Subhajit Dutta for his continuous supervision and invaluable support throughout the completion of this project. His guidance, insights and encouragement have been instrumental in shaping our trajectory. We had the privilege of applying the knowledge gained under his course, `MTH209: Data Science Lab - II` to tackle a real-world problem. This opportunity allowed us to delve deep into the subject matter and hone our abilities through practical applications.
+We express our sincere gratitude to Prof. Subhajit Dutta for his continuous supervision and invaluable support throughout the completion of this project. His guidance, insights and encouragement have been fundamental in shaping our trajectory. We had the privilege of applying the knowledge and skills gained under his course, `MTH209: Data Science Lab - II` to tackle a real-world problem. This opportunity allowed us to delve deep into the subject matter and hone our abilities through practical applications.
 
-We also extend our heartfelt thanks to our Teaching Assistant, Mr. Arghya Mukherjee for his assistance in guiding us through the process of selecting the project topic and steering us in the right direction. Amidst the initial confusion about choosing a topic, his wisdom helped us align our mutual interests to meet our goals. We are grateful for the unwavering support and encouragement from them which played a monumental role in the successful completion of this project.
+We also extend our heartfelt thanks to our Teaching Assistants, Mr. Arghya Mukherjee and Ms. Annesha Deb for their assistance in guiding us through the process of selecting the project topic and steering us in the right direction. Amidst the initial confusion about choosing a topic, their wisdom helped us align our mutual interests to meet our goals. We are grateful for the unwavering support and encouragement from both of them which played a monumental role in the successful completion of this project.
 
-Lastly, I, Sarbojit, am deeply indebted to all my teammates who generously shared their valuable suggestions and provided feedback during the initial stages of drafting this report. Without their constructive input and support, this compilation would not have been possible. We extend our heartfelt gratitude to Swapnonil, our group captain, for his unwavering availability and leadership throughout this project. His dedication in ensuring adherence to deadlines and effective management of the group has been instrumental in our collective success.
+\newpage
+
+## Appendix
+
+### Testing of Significance of the Regression coefficients in the Multinomial Logistic Regression
+
+```{=tex}
+\underline{\textbf{Model:}} Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$\\[10pt]
+\underline{\textbf{Assumptions:}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$\\[10pt]
+\underline{\textbf{Hypothesis :}} $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$\\[10pt]
+\underline{\textbf{Test statistic:}} Here our test statistic is $$T = \sqrt{k}\frac{\hat{\beta_i}}{\text{standard error}} \overset{a}{\sim} N(0,1)$$\\ [-36pt] {\scriptsize{$$\hspace{25mm}H_0$$}}\\ [-15pt]
+\underline{\textbf{Test Rule:}} We reject $H_{0j}$ at level alpha iff $p-value = P(T \geq observed) \leq \alpha$\\
+```
+
+### Shapiro-Wilk Normality Test
+
+Shapiro and Wilk ($1965$) test was originally restricted for sample size of less than $50$. This test was the first test that was able to detect departures from normality due to either skewness and kurtosis, or both. It has become the preferred test because of its good power properties.
+
+-   [Model]{.underline}: $X_1, X_2,...,X_n\overset{iid}{\sim}F(x)$
+
+-   [Assumption]{.underline}: $F$ is absolutely continuous.
+
+-   [Hypothesis]{.underline}: The null hypothesis $H_0$ assumes the random samples comes from a normal population with distribution function $\Phi$, while the alternative says that it does not come from $\Phi$. $$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$
+
+-   [Test Statistics]{.underline}: The required test statistic $W \in [0,1]$ $$
+    W = \frac{(\sum_{i=1}^n a_{i}X_{(i)})^2}{(\sum_{i=1}^n (X_{i}-\bar{X})^2)} \text{        where    } a_{i} = (a_{1}, a_{2}, ...a_{n}) = \frac{m^TV^{-1}}{(m^TV^{-1}V^{-1}m)^{1/2}} 
+    $$
+
+    -   $X_{(i)}$ \text{and} $\bar{X}$ are the $i^{th}$ order statistics and the sample mean respectively.
+    -   $m=(m_{1}, m_{2}, ...m_{n})^{1/2}$ are the expected values of the order statistics of independent and identically distributed random variables sampled from the standard normal distribution.
+    -   $V$ is the covariance matrix of those order statistics.
+
+-   [Rejection Criteria]{.underline}: If the p-value is smaller than a pre-determined significance level $\alpha$, we reject $H_{0}$.
+
+### Empirical Distribution Function (EDF)
+
+For a random sample from the distribution $F_{X}$, the empirical distribution function or edf, denoted by $S_{n}(x)$, is simply the proportion of sample values less than or equal to the specified value $x$, that is,
+
+$$S_{n}(x)=\frac{\text{number of sample values} \leq x}{n}$$ Suppose that the $n$ sample observations are distinct and arranged in increasing order so that $X_{(1)}$ is the smallest, $X_{(2)}$ is the second smallest, . . . , and $X_{(n)}$ is the largest. Then, a formal definition of the edf $S_{n}(x)$ is $$
+S_n(x) = 
+\begin{cases}
+    0 & \text{if } x < X_{(1)} \\ 
+    \frac{i}{n} & \text{if } X_{(i)} \leq x < X_{(i+1)} \text{ for } \text{  } i = 1, 2, \ldots, n \\
+    0 & \text{if } x \geq X_{(n)}
+\end{cases}
+$$
+
+
+### The Kolmogorov-Smirnov One Sample Test
+
+```{=tex}
+\textbf{Model :} $X_1, X_2,...,X_n\overset{iid}{\sim}F(x)$\\ 
+\textbf{Assumption :} Here we assume the F is absolutely continuous distribution function.\\ \textbf{Hypothesis :} Here we are interested in testing whether the random sample come from a known distribution with distribution function $F_0(x)$ (say). That is,\\ [-10pt] $$H_0 : F=F_0 \text{ against } H_a : F\neq F_0$$\\[-15pt] where $F=F_0\equiv F(x)=F_0(x)$ $\forall$ $x$\\ and $F=F_0\equiv F(x)\neq F_0(x) \text{ with strict inequality for atleast one } x$\\ Here we are mainly interested in checking Normality. So, $F_0(x)=\Phi(x)$\\ So, the hypothesis becomes,\\ [-10pt] $$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$\\[-15pt] where $\Phi$ is the cumulative distribution function of standard normal distribution.\\ \textbf{Test Statistic :} For testing $H_0$ against $H_a$ we define the following statistic,\\ $$D_n = \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right|$$\\ [-10pt] Notice that $\widehat{F_n(x)}$ approximate the true distribution function $\Phi$ . $\widehat{F_n(x)}$ by definition is a step function i.e. the absolute difference measured by $D_n$ provide us the departure of the true situation from the null hypothesis towards the corresponding alternative.\\ The distribution of the test statistics is free from the population distribution, \\ \textbf{Distribution Free :}\\ \textcolor{violet}{Exact Distribution Free (EDF) of $D_n$ :} Here we use the ordered statistics,\\ [-10pt] $$X_{(1)}, X_{(2)}, ... , X_{(n)}, \text{ Further we denote } X_{(0)}=-\infty \text{ and } X_{(n+1)}=\infty$$\\ [-45pt]
+
+\begin{align*}
+D_n &= \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right| \\
+&= \max_{i=0,1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\\
+&= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\right\}&\\
+&= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\frac{i}{n}-\Phi(x)\right|\right\}\right\} \hspace{30pt} \left[\because \widehat{F_n(x)}=\frac{i}{n}\right]\\
+&= \max\left\{o, \max_{i=1,2,...,n}\left\{\left|\frac{i}{n}-\Phi(x_{(i)})\right|\right\}\right\}\\
+\end{align*}\\ [-21pt]
+Notice that,\\ [-15pt]
+$$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\ [-30pt] {\scriptsize{$$\hspace{19mm}H_0$$}}\\ [-20.5pt] $$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\ [-30pt] {\scriptsize{$$\hspace{15.5mm}H_0$$}}\\ [-20.5pt] Since $\Phi$ is absolutely continuous, we can conclude that,\\ [-8pt] $$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\ [-30pt] {\scriptsize{$$\hspace{21mm}H_0$$}}\\ [-13pt] That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\ \textbf{Test :} Notice that $D_n$ depends on the empirical distribution function $\widehat{F_n(x)}$ which represents the true distribution function. Thus the directional difference measured by $D_n$ actually indicate the departure of the true situation form the null hypothesis towards the alternative $H_a$ i.e. under $H_a : F\neq F_0$ becomes larger than that under $H_0$. On the other hand a small value of $D_n$ indicates the acceptance of $H_0$. Thus a right tail test based on $D_n$ will be appropriate for testing $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$.\\ We reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\ [-10pt] $$D_n > d_\alpha$$\\ [-15pt] In terms of p-value we can say, we reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\ [-8pt] $$p-value=P_{H_{0}}\left(D_n\ge observed(D_n)\right)\le \alpha$$\\
+```
+\newpage
+### The Kolmogorov-Smirnov Two Sample Test
+
+Two sample KS test is a non-parametric test which is used to compare two different samples are coming from the same population or not.
+
+The order statistics corresponding to two random samples of size $m$ and $n$ from continuous populations $F_{X}$ and $F_{Y}$, are
+
+$$X_{(1)}, X_{(2)},...,X_{(m)} \text{   and    } \text{  } Y_{(1)}, Y_{(2)},...,Y_{(n)}$$
+
+Their respective empirical distribution functions, denoted by $S_{m}(x)$ and $S_{n}(x)$, are defined as:
+
+$$
+S_m(x) = 
+\begin{cases}
+    0 & \text{if } x < X_{(1)} \\ 
+    \frac{k}{m} & \text{if } X_{(k)} \leq x < X_{(k+1)} \text{ for } \text{  } k = 1, 2, \ldots, m-1 \\
+    0 & \text{if } x \geq X_{(m)}
+\end{cases}
+$$
+
+and
+
+$$
+S_n(x) = 
+\begin{cases}
+    0 & \text{if } x < Y_{(1)} \\ 
+    \frac{k}{n} & \text{if } Y_{(k)} \leq x < Y_{(k+1)} \text{ for } \text{  } k = 1, 2, \ldots, n-1 \\
+    0 & \text{if } x \geq Y_{(n)}
+\end{cases}
+$$ In a combined ordered arrangement of $m+n$ sample observations, $S_m(x)$ and $S_n(x)$ are the respective proportions of $X$ and $Y$ observations which do not exceed the specified value $x$.
+
+If the null hypothesis
+
+$$
+H_0: F_Y(x) = F_X(x)  \text{  } \text{ } \forall{x}
+$$
+
+is true, the population distributions are identical and we have two samples from the same population. The empirical distribution functions for the $X$ and $Y$ samples are reasonable estimates of their respective population cdf. Therefore, allowing for sampling variation, there should be reasonable agreement between the two empirical distributions if indeed $H_0$ is true; otherwise the data suggest that $H_0$ is not true and therefore should be rejected. In other words, how close do the two empirical cdf's have to be so that they could be viewed as not significantly different, taking account of the sampling variability. This approach necessarily requires a definition of closeness. The two-sided Kolmogorov-Smirnov two-sample test criterion, denoted by $D_{m,n}$, is based on the maximum absolute difference between the two empirical distributions.
+
+$$
+D_{m,n} = \max_x |S_{m}(x) - S_{n}(x)| 
+$$
+\newpage
+Since here only the magnitudes, and not the directions, of the deviations are considered, $D_{m,n}$ is appropriate for a general two-sided alternative
+
+$$
+H_A: F_Y(x) \neq F_X(x) \text{ for some } x.
+$$
+
+and the rejection region is in the upper tail, defined by
+
+$$
+D_{m,n} \geq c_{\alpha}
+$$ where
+
+$$
+P(D_{m,n} \geq c_{\alpha} \,|\, H_0) \leq \alpha
+$$ Because of the Glivenko-Cantelli theorem, the test is consistent for this alternative. The p-value is
+
+$$
+p = P(D_{m,n} \geq D_{observed} \,|\, H_0)
+$$
 
 ## References
 
@@ -869,54 +1182,8 @@ Lastly, I, Sarbojit, am deeply indebted to all my teammates who generously share
 
 -   The Cancer Breakthrough: A Nutritional Handbook for Doctors and Patients (*Paperback*) -- $29$ July, $2007$.
 
-## Appendix
+-   Razali, N. and Wah, Y. ($2011$) Power Comparisons of Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors and Anderson-Darling tests. Journal of Statistical Modeling and Analytics, $2$, $21$-$33$.
 
-```{=tex}
-1. \textbf{Testing of Significance of the Regression coefficients in Multinomial Logistic Regression}\\[10pt]
-\underline{\textbf{Model :}} Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$\\[10pt]
-\underline{\textbf{Assumptions :}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$\\[10pt]
-\underline{\textbf{Hypothesis :}} $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$\\[10pt]
-\underline{\textbf{Test statistic :}} Here our test statistic is $$T = \sqrt{k}\frac{\hat{\beta_i}}{\text{standard error}} \overset{a}{\sim} N(0,1)$$\\ [-36pt] {\scriptsize{$$\hspace{25mm}H_0$$}}\\ [-15pt]
-Test Rule : We reject $H_{0j}$ at level alpha iff $p-value = P(T \geq observed) \leq \alpha$\\
-```
+-   Wilk, W. ($2015$) Shapiro Wilk And Related Tests For Normality, Massachusetts Insitute of Technology.
 
-2. Kolmogorov Smirnov Test
-\textbf{Model :} $X_1, X_2,...,X_n\distras{iid}F(x)$\\
-\textbf{Assumption :} Here we assume the F is absolutely continuous distribution function.\\
-\textbf{Hypothesis :} Here we are interested in testing whether the random sample come from a known distribution with distribution function $F_0(x)$ (say). That is,\\[-10pt]
-$$H_0 : F=F_0 \text{ against } H_a : F\neq F_0$$\\[-15pt]
-where $F=F_0\equiv F(x)=F_0(x)$ $\forall$ $x$\\
-and $F=F_0\equiv F(x)\neq F_0(x) \text{ with strict inequality for atleast one } x$\\
-Here we are mainly interested in checking Normality. So, $F_0(x)=\Phi(x)$\\
-So, the hypothesis becomes,\\[-10pt]
-$$H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$$\\[-15pt]
-where $\Phi$ is the cumulative distribution function of standard normal distribution.\\
-\textbf{Test Statistic :} For testing $H_0$ against $H_a$ we define the following statistic,\\
-$$D_n = \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right|$$\\[-10pt]
-Notice that $\widehat{F_n(x)}$ approximate the true distribution function $\Phi$ . $\widehat{F_n(x)}$ by definition is a step function i.e. the absolute difference measured by $D_n$ provide us the departure of the true situation from the null hypothesis towards the corresponding alternative.\\
-The distribution of the test statistics is free from the population distribution, (See Appendix A)\\
-\textbf{Distribution Free :}\\
-\textcolor{violet}{Exact Distribution Free (EDF) of $D_n$ :} Here we use the ordered statistics,\\[-10pt]
-$$X_{(1)}, X_{(2)}, ... , X_{(n)}, \text{ Further we denote } X_{(0)}=-\infty \text{ and } X_{(n+1)}=\infty$$\\[-22.5pt]
-\begin{align*}
-    D_n &= \sup_{x\in \mathbb{R}}\left|\widehat{F_n(x)}-\Phi(x)\right| \\
-    &= \max_{i=0,1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\widehat{F_n(x)}-\Phi(x)\right|\right\}\right\}\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\sup_{X_{(i)}\le x\le X_{(i+1)}}\left|\frac{i}{n}-\Phi(x)\right|\right\}\right\} \hspace{30pt} \left[\becauses \widehat{F_n(x)}=\frac{i}{n}\right]\\
-    &= \max\left\{o, \max_{i=1,2,...,n}\left\{\left|\frac{i}{n}-\Phi(x_{(i)})\right|\right\}\right\}\\
-\end{align*}\\[-21pt]
-Notice that,\\[-15pt]
-$$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\[-23.5pt]
-{\scriptsize{$$\hspace{19mm}H_0$$}}\\[-20.5pt]
-$$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\[-23.5pt]
-{\scriptsize{$$\hspace{15.5mm}H_0$$}}\\[-20.5pt]
-Since $\Phi$ is absolutely continuous, we can conclude that,\\[-8pt]
-$$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\[-24pt]
-{\scriptsize{$$\hspace{21mm}H_0$$}}\\[-13pt]
-That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, 
-U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\
-\textbf{Test :} Notice that $D_n$ depends on the empirical distribution function $\widehat{F_n(x)}$ which represents the true distribution function. Thus the directional difference measured by $D_n$ actually indicate the departure of the true situation form the null hypothesis towards the alternative $H_a$ i.e. under $H_a : F\neq F_0$ becomes larger than that under $H_0$. On the other hand a small value of $D_n$ indicates the acceptance of $H_0$. Thus a right tail test based on $D_n$ will be appropriate for testing  $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$.\\
-We reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-10pt]
-$$D_n > d_\alpha$$\\[-15pt]
-In terms of p-value we can say, we reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\[-8pt]
-$$p-value=P_{H_{0}}\left(D_n\ge observed(D_n)\right)\le \alpha$$\\
+-   Gibbons, J.D. and Chakraborti, S. ($2014$), Nonparametric Statistical Inference, Fourth Edition: Revised and Expanded.
