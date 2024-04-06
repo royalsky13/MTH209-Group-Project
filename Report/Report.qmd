@@ -316,7 +316,6 @@ legend("topleft", legend = c("Male", "Female"), col = c("blue", "red"), lty = c(
 
 ```
 
-
 ### Gender-wise top ten cancer sites
 
 [**Leading Cancer Sites Among Females**]{.underline}**:**
@@ -558,7 +557,7 @@ kable(tail(variances_sorted, 3), caption = "Bottom 3 high variance genes", row.n
 In a one-vs-all t-test scenario, we compare the means of one cancer group (the "*one*" group) against the means of all other groups excluding that cancer group (the "*all*" group). It's commonly used in situations where one wants to compare a specific group against the rest of the data.
 
 |                       |                                                                                                                                                                                               |
-|----------------------|--------------------------------------------------|
+|---------------------|------------------------------------------------|
 | **Independence**      | Gene expressions within the "*one*" group and "*all*" group are independent of each other.                                                                                                    |
 | **Normality**         | Each group's data follow approximately the normal distribution (by [Central Limit Theorem]{.underline}).                                                                                      |
 | **Random Sampling**   | The collective gene expressions data are obtained through a random sampling process from the population of cancer patients. This ensures that the sample is representative of the population. |
@@ -682,7 +681,7 @@ $gene_1:4$ & -0.076462 &  0.115619  & -0.661  &  0.508 \\
 \end{tabular}
 \end{table}
 ```
-Here from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$.
+Here from the p-values, we can see that Gene -$1$ has significant effects in causing BRCA and KIRC, at level $0.05$. For further, see [**Appendix**]{.underline}.
 
 Now, let us fit the model and obtain the predicted probabilities of different types of cancer.
 
@@ -805,7 +804,7 @@ Here age data of $1,461,427$ cancer patients are recorded. Among them $749,251$ 
 
 We have,
 
--   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$, $n_{f}=749251$
 -   The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
 -   The test is a level $\alpha=0.05$ both sided test.
 
@@ -859,7 +858,7 @@ Previously, we performed Shapiro-Wilk test to check the normality of the age of 
 
 We have,
 
--   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$.
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$, $n_{f}=749251$.
 -   The distribution functions $F_{i}$ are assumed to be absolutely continuous $\forall{i}$.
 -   The test is a level $\alpha=0.05$ both sided test.
 
@@ -984,6 +983,7 @@ lines(sorted_vals_m, gamma_cdf_m, col = "green")
 legend("topleft", legend = c("Empirical CDF", "Normal CDF", "Gamma CDF"), 
        lty = 1, col = c("black", "red", "green"))
 ```
+
 \newpage
 
 #### Two Sample Test
@@ -992,7 +992,7 @@ Now we will test whether the age of male cancer patients and female cancer patie
 
 We have,
 
--   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$,  $n_{f}=749251$.
+-   $X_{i_{1}}, X_{i_{2}},...,X_{i_{n_{i}}}\overset{iid}{\sim}F_{i}(x)$ where $X_{i_{j}}$ is the $j^{th}$ person of the $i^{th}$ gender. Here $i \in \{f,m\}$ and $j=1,2,....n_{i}$ where $n_{m}=712176$, $n_{f}=749251$.
 -   The distribution functions $F_{m}$ and $F_{f}$ are assumed to be absolutely continuous.
 -   The test is a level $\alpha=0.05$ both sided test.
 
@@ -1016,9 +1016,9 @@ $$
 ks.test(m, f, alternative = "two.sided")
 ```
 
-- In the analyzed age group, our findings reveal a notable trend in cancer prevalence, with breast cancer and cervix cancer exhibiting higher incidence rates among females compared to males. This observation suggests that these types of cancer disproportionately affect females within this age range . 
+-   In the analyzed age group, our findings reveal a notable trend in cancer prevalence, with breast cancer and cervix cancer exhibiting higher incidence rates among females compared to males. This observation suggests that these types of cancer disproportionately affect females within this age range .
 
-- Furthermore, our analysis indicates a notable increase in the number of patients diagnosed with these cancers, underscoring their dominant presence in the realm of cancer analysis. 
+-   Furthermore, our analysis indicates a notable increase in the number of patients diagnosed with these cancers, underscoring their dominant presence in the realm of cancer analysis.
 
 ```{r}
 #| echo: false
@@ -1039,9 +1039,9 @@ legend("topleft", legend = c("Empirical CDF males", "Empirical CDF females"),
 
 In brief, our analysis of cancer incidence in India reveals significant findings. Uttar Pradesh emerged as a high-risk region and the noticeable increase in cancer cases across India in recent times needs further investigation and intervention. Interestingly, our examination of the male-female age-wise distribution of cancer patients indicated a similarity with a negative skewness, suggesting a common trend in cancer occurrence across genders and age groups. Through exploratory data analysis (EDA), we gained insights into the structure and content of the datasets, ensuring data quality through categorical variable conversion, data merging and data quality checks.
 
-Furthermore, our exploration of different cancer types demonstrated non-uniform distribution, with varying percentages of occurrence across the different types. We observed that Breast Cancer (BRCA) contained the most data points, almost $38\%$ of the entire dataset.
+Furthermore, our exploration of different cancer types demonstrated non-uniform distribution, with varying percentages of occurrence across the different types. We observed that Breast Cancer (BRCA) contained the most data points, almost $38\%$ of the entire dataset. To delve deeper into the factors influencing cancer types, we employed the multinomial logistic regression model, inputing gene expression values of various genes --- particularly those capturing maximum variability identified through Principal Component Analysis (PCA).
 
-To delve deeper into the factors influencing cancer types, we employed the multinomial logistic regression model, inputing gene expression values of various genes ---particularly those capturing maximum variability identified through Principal Component Analysis (PCA). We performed parametric tests to assess differences in mean gene expression levels among cancer types. Rejection of the null hypothesis for certain genes in these tests signified the likeliness of significant differences for which further data analysis is required.  Additionally, the one-vs-all t-test allowed us to compare specific cancer groups against the rest, contributing to a better understanding of inter-grouped differences.
+We performed parametric tests to assess differences in mean gene expression levels among cancer types. Rejection of the null hypothesis for certain genes in these tests signified the likeliness of significant differences for which further data analysis is required. Additionally, the one-vs-all t-test allowed us to compare specific cancer groups against the rest, contributing to a better understanding of inter-grouped differences. From the help of Non-Parametric tests, we concluded that from the age-wise cancer patients' data, the data were not normally distributed. Whereas for the `ICMR.Rdata` case, we found that out of $20$K+ genes, only about $17$K+ genes were following the normality criterion. If they were normally distributed, then we could have had further statistical inferences.
 
 ## Acknowledgement
 
@@ -1057,12 +1057,12 @@ We also extend our heartfelt thanks to our Teaching Assistants, Mr. Arghya Mukhe
 
 ```{=tex}
 \underline{\textbf{Model:}} Here our model is $E(Y_j) = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+e^{\boldsymbol{X^T_j\beta_i}}}$, $j=1,2,...,n$\\[10pt]
-\underline{\textbf{Assumptions:}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ $j=1,2,...,n$\\[10pt]
+\underline{\textbf{Assumptions:}} The error term $\epsilon_j$ is such that $E(\epsilon_j) = 0$ and $Var(\epsilon_j) = \sigma^2_j$ where $Var(Y_j) = \sigma^2_j$ and $\epsilon_j$'s are independently distributed, $j=1,2,...,n$\\[10pt]
 \underline{\textbf{Hypothesis :}} $H_{0i} : \beta_i = 0$ vs $H_{1i} : \beta_i \neq 0$, $i=1,2,...,k$\\[10pt]
 \underline{\textbf{Test statistic:}} Here our test statistic is $$T_i = \sqrt{k}\frac{\hat{\beta_i}}{\text{standard error}} \overset{a}{\sim} N(0,1)$$\\ [-36pt] {\scriptsize{$$\hspace{25mm}H_0$$}}\\ [-15pt]
-\underline{\textbf{Test Rule:}} We reject $H_{0i}$ at level $\alpha$ iff $p-value = P(|T_i| \geq observed(T_i)) \leq \alpha$ ; $i=1,2,...,k$ \\
+where $\hat{\beta_i}$ is the Maximum Likelihood Estimator of $\beta_i$ \\
+\underline{\textbf{Test Rule:}} We reject $H_{0i}$ at level $\alpha$ iff $p-value = P(|T_i| \geq observed(|T_i|)) \leq \alpha$ ; $i=1,2,...,k$ \\
 ```
-
 ### Shapiro-Wilk Normality Test
 
 Shapiro and Wilk ($1965$) test was originally restricted for sample size of less than $50$. This test was the first test that was able to detect departures from normality due to either skewness and kurtosis, or both. It has become the preferred test because of its good power properties.
@@ -1096,7 +1096,6 @@ S_n(x) =
 \end{cases}
 $$
 
-
 ### The Kolmogorov-Smirnov One Sample Test
 
 ```{=tex}
@@ -1114,6 +1113,7 @@ Notice that,\\ [-15pt]
 $$X_1, X_2,...,X_n\overset{iid}{\sim}\Phi$$\\ [-30pt] {\scriptsize{$$\hspace{19mm}H_0$$}}\\ [-20.5pt] $$\implies U_i=\Phi(X_i)\overset{iid}{\sim}U(0,1)$$\\ [-30pt] {\scriptsize{$$\hspace{15.5mm}H_0$$}}\\ [-20.5pt] Since $\Phi$ is absolutely continuous, we can conclude that,\\ [-8pt] $$\implies U_{(i)}=\Phi\left(X_{(i)}\right)\overset{iid}{\sim}U(0,1)$$\\ [-30pt] {\scriptsize{$$\hspace{21mm}H_0$$}}\\ [-13pt] That is $D_n$ (under $H_0$) depends on the ordered statistics $\left(U_{(1)}, U_{(2)},..., U_{(n)}\right)$ from U(0,1). Hence the test is based on $D_n$ is EDF (Exact Distribution Free).\\ \textbf{Test :} Notice that $D_n$ depends on the empirical distribution function $\widehat{F_n(x)}$ which represents the true distribution function. Thus the directional difference measured by $D_n$ actually indicate the departure of the true situation form the null hypothesis towards the alternative $H_a$ i.e. under $H_a : F\neq F_0$ becomes larger than that under $H_0$. On the other hand a small value of $D_n$ indicates the acceptance of $H_0$. Thus a right tail test based on $D_n$ will be appropriate for testing $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$.\\ We reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\ [-10pt] $$D_n > d_\alpha$$\\ [-15pt] In terms of p-value we can say, we reject $H_0 : F=\Phi \text{ against } H_a : F\neq \Phi$ at level $\alpha$ if,\\ [-8pt] $$p-value=P_{H_{0}}\left(D_n\ge observed(D_n)\right)\le \alpha$$\\
 ```
 \newpage
+
 ### The Kolmogorov-Smirnov Two Sample Test
 
 Two sample KS test is a non-parametric test which is used to compare two different samples are coming from the same population or not.
@@ -1154,9 +1154,7 @@ is true, the population distributions are identical and we have two samples from
 
 $$
 D_{m,n} = \max_x |S_{m}(x) - S_{n}(x)| 
-$$
-\newpage
-Since here only the magnitudes, and not the directions, of the deviations are considered, $D_{m,n}$ is appropriate for a general two-sided alternative
+$$ \newpage Since here only the magnitudes, and not the directions, of the deviations are considered, $D_{m,n}$ is appropriate for a general two-sided alternative
 
 $$
 H_A: F_Y(x) \neq F_X(x) \text{ for some } x.
