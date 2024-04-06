@@ -1,5 +1,7 @@
 ################################################################################
 
+# To run this code all the India_files must be downloaded
+
 library(sf)
 library(ggplot2)
 # library(dplyr)
