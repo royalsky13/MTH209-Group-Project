@@ -655,9 +655,9 @@ Now, from this we observe that $\sum_{i=1}^{5}\pi_{ij} = 1$ so, $\pi_{5j} = 1-\s
     \end{cases}
 \end{equation*}
 
-Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+\sum_{j=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
+Therefore, $P(Y_j = i) = \pi_{ij} = \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+\sum_{i=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}}$ ; $i = 1,2,3,4$
 
-Now, by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+\sum_{j=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+\sum_{j=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
+Now by Maximum Likelihood Estimation we try to maximize the likelihood function, $$L(\beta) = L(\beta_1, \beta_2, \beta_3,\beta_4) = \prod_{j = 1}^{n} \left[\left\{\prod_{i=1}^{4} \left( \frac{e^{\boldsymbol{X^T_j\beta_i}}}{1+\sum_{i=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=i)}\right\} \left( \frac{1}{1+\sum_{i=1}^{4}e^{\boldsymbol{X^T_j\beta_i}}} \right)^{\mathbb{I}(Y_j=5)} \right]$$ in order to fit the model. We can maximize it by various numerical ways.
 
 Let us consider only Gene -$1$ first.
 
